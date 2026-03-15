@@ -59,13 +59,27 @@
             top: 0;
             width: 280px;
             height: 100vh;
-            background: rgba(30, 41, 59, 0.95);
+            background: rgba(30, 41, 59, 0.98);
             backdrop-filter: blur(20px);
             border-right: 1px solid rgba(255, 255, 255, 0.1);
             padding: 24px 16px;
             z-index: 1000;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
         }
 
         .sidebar-header {
@@ -75,6 +89,7 @@
             padding: 0 12px 24px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 24px;
+            flex-shrink: 0;
         }
 
         .logo-icon {
@@ -87,6 +102,7 @@
             justify-content: center;
             font-size: 24px;
             box-shadow: var(--shadow-lg);
+            flex-shrink: 0;
         }
 
         .logo-text h1 {
@@ -105,16 +121,17 @@
 
         .nav-menu {
             list-style: none;
+            padding-bottom: 20px;
         }
 
         .nav-item {
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             padding: 14px 16px;
             border-radius: 12px;
             color: var(--gray-300);
@@ -123,29 +140,60 @@
             font-weight: 500;
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--gradient-1);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
         }
 
         .nav-link:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.08);
             color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-link:hover::before {
+            transform: scaleY(1);
         }
 
         .nav-link.active {
             background: var(--gradient-1);
             color: white;
             box-shadow: var(--shadow-md);
+            transform: translateX(4px);
+        }
+
+        .nav-link.active::before {
+            transform: scaleY(1);
         }
 
         .nav-icon {
             width: 22px;
             text-align: center;
             font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .nav-text {
+            flex: 1;
+            white-space: nowrap;
         }
 
         .main-content {
             margin-left: 280px;
             padding: 24px 32px;
             min-height: 100vh;
+            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .header {
@@ -183,6 +231,9 @@
             font-size: 13px;
             color: var(--gray-300);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .stats-grid {
@@ -315,6 +366,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .chart-title {
@@ -367,6 +420,7 @@
             padding: 24px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 32px;
+            overflow-x: auto;
         }
 
         .table-header {
@@ -374,6 +428,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .table-title {
@@ -386,6 +442,7 @@
         .data-table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 600px;
         }
 
         .data-table th,
@@ -393,6 +450,7 @@
             padding: 14px 16px;
             text-align: left;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            white-space: nowrap;
         }
 
         .data-table th {
@@ -435,6 +493,7 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
+            white-space: nowrap;
         }
 
         .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); }
@@ -472,6 +531,7 @@
             align-items: center;
             justify-content: center;
             font-size: 20px;
+            flex-shrink: 0;
         }
 
         .info-card-title {
@@ -491,6 +551,8 @@
             align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .info-item:last-child {
@@ -516,6 +578,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            flex-wrap: wrap;
         }
 
         .section-title::before {
@@ -543,6 +606,7 @@
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
+            white-space: nowrap;
         }
 
         .tab-btn:hover {
@@ -566,17 +630,64 @@
             display: block;
         }
 
+        .tab-subcontent {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-subcontent.active {
+            display: block;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .mobile-menu-btn {
+        /* Mobile Navigation Styles */
+        .mobile-header {
             display: none;
             position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1001;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(30, 41, 59, 0.98);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 999;
+            padding: 0 16px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mobile-logo {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .mobile-logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            line-height: 1.2;
+        }
+
+        .mobile-menu-btn {
+            display: none;
             width: 50px;
             height: 50px;
             border-radius: 12px;
@@ -586,6 +697,31 @@
             font-size: 24px;
             cursor: pointer;
             box-shadow: var(--shadow-lg);
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mobile-menu-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .mobile-menu-btn:active::before {
+            left: 100%;
+        }
+
+        .mobile-menu-btn.active {
+            background: var(--danger);
+            transform: rotate(90deg);
         }
 
         .overlay {
@@ -595,23 +731,35 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 998;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .overlay.active {
             display: block;
+            opacity: 1;
         }
 
+        /* Tablet Styles */
         @media (max-width: 1200px) {
             .charts-grid {
                 grid-template-columns: 1fr;
             }
+
+            .main-content {
+                padding: 24px 20px;
+            }
         }
 
-        @media (max-width: 768px) {
+        /* Mobile Styles */
+        @media (max-width: 1024px) {
             .sidebar {
                 transform: translateX(-100%);
+                width: 300px;
+                box-shadow: var(--shadow-xl);
             }
 
             .sidebar.active {
@@ -620,18 +768,25 @@
 
             .main-content {
                 margin-left: 0;
-                padding: 80px 16px 24px;
+                padding-top: 90px;
+            }
+
+            .mobile-header {
+                display: flex;
             }
 
             .mobile-menu-btn {
                 display: flex;
-                align-items: center;
-                justify-content: center;
             }
 
             .header {
                 flex-direction: column;
                 align-items: flex-start;
+                margin-bottom: 24px;
+            }
+
+            .header-title h2 {
+                font-size: 22px;
             }
 
             .header-actions {
@@ -639,16 +794,270 @@
                 justify-content: space-between;
             }
 
+            .date-badge {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
             .stats-grid {
                 grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .stat-value {
+                font-size: 28px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .chart-container {
+                height: 280px;
+            }
+
+            .tabs {
+                gap: 6px;
+            }
+
+            .tab-btn {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 280px;
+            }
+
+            .main-content {
+                padding: 80px 16px 24px;
+            }
+
+            .header-title h2 {
+                font-size: 20px;
+            }
+
+            .header-title p {
+                font-size: 12px;
+            }
+
+            .stat-card {
+                padding: 20px;
             }
 
             .stat-value {
                 font-size: 24px;
             }
 
+            .stat-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 20px;
+            }
+
+            .chart-card {
+                padding: 16px;
+            }
+
+            .chart-title {
+                font-size: 16px;
+            }
+
+            .table-card {
+                padding: 16px;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 10px 12px;
+                font-size: 12px;
+            }
+
+            .badge {
+                padding: 4px 10px;
+                font-size: 11px;
+            }
+
+            .info-card {
+                padding: 16px;
+            }
+
+            .info-card-title {
+                font-size: 14px;
+            }
+
+            .section-title {
+                font-size: 16px;
+            }
+
+            .tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 8px;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .tab-btn {
+                flex-shrink: 0;
+                padding: 10px 18px;
+            }
+
+            .mobile-logo-text {
+                font-size: 12px;
+            }
+
+            .mobile-logo {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stat-value {
+                font-size: 22px;
+            }
+
+            .stat-trend {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+
             .chart-container {
-                height: 250px;
+                height: 240px;
+            }
+
+            .date-badge {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+
+            .nav-link {
+                padding: 12px 14px;
+                font-size: 13px;
+            }
+
+            .nav-icon {
+                font-size: 16px;
+            }
+        }
+
+        /* Navigation close button for mobile */
+        .nav-close-btn {
+            display: none;
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(239, 68, 68, 0.2);
+            border: none;
+            color: var(--danger);
+            font-size: 20px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-close-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 1024px) {
+            .nav-close-btn {
+                display: flex;
+            }
+
+            .sidebar-header {
+                padding-right: 50px;
+            }
+        }
+
+        /* Swipe indicator for mobile tabs */
+        .tabs-container {
+            position: relative;
+        }
+
+        .tabs-container::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 30px;
+            background: linear-gradient(90deg, transparent, rgba(30, 41, 59, 0.6));
+            pointer-events: none;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .tabs-container::after {
+                display: block;
+            }
+        }
+
+        /* Touch feedback for mobile */
+        .nav-link:active,
+        .tab-btn:active,
+        .chart-btn:active {
+            transform: scale(0.98);
+        }
+
+        @media (max-width: 1024px) {
+            .nav-link:active {
+                background: rgba(255, 255, 255, 0.15);
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Prevent body scroll when mobile menu is open */
+        body.menu-open {
+            overflow: hidden;
+        }
+
+        /* Animation for sidebar items */
+        .nav-item {
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        .nav-item:nth-child(1) { animation-delay: 0.05s; }
+        .nav-item:nth-child(2) { animation-delay: 0.1s; }
+        .nav-item:nth-child(3) { animation-delay: 0.15s; }
+        .nav-item:nth-child(4) { animation-delay: 0.2s; }
+        .nav-item:nth-child(5) { animation-delay: 0.25s; }
+        .nav-item:nth-child(6) { animation-delay: 0.3s; }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .nav-item {
+                animation: none;
+                opacity: 1;
+                transform: none;
+            }
+
+            .sidebar.active .nav-item {
+                animation: slideIn 0.3s ease forwards;
             }
         }
 
@@ -672,32 +1081,6 @@
             to { transform: rotate(360deg); }
         }
 
-        .tooltip {
-            position: relative;
-        }
-
-        .tooltip::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 8px 12px;
-            background: var(--dark);
-            color: white;
-            font-size: 12px;
-            border-radius: 8px;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .tooltip:hover::after {
-            opacity: 1;
-            visibility: visible;
-        }
-
         .animate-on-scroll {
             opacity: 0;
             transform: translateY(20px);
@@ -711,10 +1094,21 @@
     </style>
 </head>
 <body>
-    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
-    <div class="overlay" onclick="toggleSidebar()"></div>
+    <!-- Mobile Header -->
+    <header class="mobile-header">
+        <div class="mobile-header-left">
+            <div class="mobile-logo">📊</div>
+            <span class="mobile-logo-text">Dashboard<br>Demografi</span>
+        </div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()" aria-label="Toggle Menu">
+            ☰
+        </button>
+    </header>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
     <aside class="sidebar" id="sidebar">
+        <button class="nav-close-btn" onclick="toggleSidebar()" aria-label="Close Menu">✕</button>
         <div class="sidebar-header">
             <div class="logo-icon">📊</div>
             <div class="logo-text">
@@ -726,37 +1120,37 @@
             <li class="nav-item">
                 <a class="nav-link active" onclick="showSection('overview')">
                     <span class="nav-icon">🏠</span>
-                    <span>Ringkasan</span>
+                    <span class="nav-text">Ringkasan</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" onclick="showSection('population')">
                     <span class="nav-icon">👥</span>
-                    <span>Kependudukan</span>
+                    <span class="nav-text">Kependudukan</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" onclick="showSection('social')">
                     <span class="nav-icon">📚</span>
-                    <span>Sosial Ekonomi</span>
+                    <span class="nav-text">Sosial Ekonomi</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" onclick="showSection('vital')">
                     <span class="nav-icon">🏥</span>
-                    <span>Vital Statistik</span>
+                    <span class="nav-text">Vital Statistik</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" onclick="showSection('documents')">
                     <span class="nav-icon">📋</span>
-                    <span>Dokumen</span>
+                    <span class="nav-text">Dokumen</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" onclick="showSection('migration')">
                     <span class="nav-icon">🚗</span>
-                    <span>Migrasi</span>
+                    <span class="nav-text">Migrasi</span>
                 </a>
             </li>
         </ul>
@@ -910,11 +1304,13 @@
         <div id="population" class="tab-content">
             <h3 class="section-title">Struktur dan Distribusi Penduduk</h3>
             
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('pop-age', this)">Piramida Usia</button>
-                <button class="tab-btn" onclick="switchTab('pop-gender', this)">Jenis Kelamin</button>
-                <button class="tab-btn" onclick="switchTab('pop-marriage', this)">Status Perkawinan</button>
-                <button class="tab-btn" onclick="switchTab('pop-family', this)">Keluarga</button>
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('pop-age', this)">Piramida Usia</button>
+                    <button class="tab-btn" onclick="switchTab('pop-gender', this)">Jenis Kelamin</button>
+                    <button class="tab-btn" onclick="switchTab('pop-marriage', this)">Status Perkawinan</button>
+                    <button class="tab-btn" onclick="switchTab('pop-family', this)">Keluarga</button>
+                </div>
             </div>
 
             <div id="pop-age" class="tab-subcontent active">
@@ -1059,11 +1455,13 @@
         <div id="social" class="tab-content">
             <h3 class="section-title">Karakteristik Sosial Ekonomi</h3>
 
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab('soc-education', this)">Pendidikan</button>
-                <button class="tab-btn" onclick="switchTab('soc-employment', this)">Pekerjaan</button>
-                <button class="tab-btn" onclick="switchTab('soc-religion', this)">Agama</button>
-                <button class="tab-btn" onclick="switchTab('soc-disability', this)">Disabilitas</button>
+            <div class="tabs-container">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('soc-education', this)">Pendidikan</button>
+                    <button class="tab-btn" onclick="switchTab('soc-employment', this)">Pekerjaan</button>
+                    <button class="tab-btn" onclick="switchTab('soc-religion', this)">Agama</button>
+                    <button class="tab-btn" onclick="switchTab('soc-disability', this)">Disabilitas</button>
+                </div>
             </div>
 
             <div id="soc-education" class="tab-subcontent active">
@@ -1437,7 +1835,7 @@
                 </div>
                 <div class="stat-card">
                     <div class="stat-header">
-                        <div class="stat-icon purple"></div>
+                        <div class="stat-icon purple">🆔</div>
                         <div class="stat-trend up">↑ 92.96%</div>
                     </div>
                     <div class="stat-value">85,260</div>
@@ -1877,19 +2275,7 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { display: false },
-                    annotation: {
-                        annotations: {
-                            line1: {
-                                type: 'line',
-                                yMin: 100,
-                                yMax: 100,
-                                borderColor: 'rgba(255, 255, 255, 0.5)',
-                                borderWidth: 2,
-                                borderDash: [5, 5]
-                            }
-                        }
-                    }
+                    legend: { display: false }
                 },
                 scales: {
                     y: {
@@ -2166,20 +2552,7 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: { 
-                    legend: { display: false },
-                    annotation: {
-                        annotations: {
-                            line1: {
-                                type: 'line',
-                                yMin: 5.44,
-                                yMax: 5.44,
-                                borderColor: 'rgba(255, 255, 255, 0.5)',
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                label: { content: 'Rata-rata: 5.44', display: true }
-                            }
-                        }
-                    }
+                    legend: { display: false }
                 },
                 scales: {
                     y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
@@ -2328,19 +2701,7 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: { 
-                    legend: { display: false },
-                    annotation: {
-                        annotations: {
-                            line1: {
-                                type: 'line',
-                                yMin: 0,
-                                yMax: 0,
-                                borderColor: 'rgba(255, 255, 255, 0.5)',
-                                borderWidth: 2,
-                                borderDash: [5, 5]
-                            }
-                        }
-                    }
+                    legend: { display: false }
                 },
                 scales: {
                     y: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
@@ -2410,13 +2771,18 @@
             event.target.closest('.nav-link').classList.add('active');
             
             // Close mobile sidebar
-            if (window.innerWidth <= 768) {
+            if (window.innerWidth <= 1024) {
                 toggleSidebar();
+            }
+            
+            // Scroll to top on mobile
+            if (window.innerWidth <= 1024) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
         function switchTab(tabId, btn) {
-            const parent = btn.closest('.tab-content') || btn.closest('.tab-subcontent')?.parentElement;
+            const parent = btn.closest('.tab-content') || document.body;
             parent.querySelectorAll('.tab-subcontent').forEach(tab => {
                 tab.classList.remove('active');
             });
@@ -2429,8 +2795,70 @@
         }
 
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.querySelector('.overlay').classList.toggle('active');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const menuBtn = document.getElementById('mobileMenuBtn');
+            const body = document.body;
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+            menuBtn.classList.toggle('active');
+            body.classList.toggle('menu-open');
+            
+            // Change menu icon
+            if (sidebar.classList.contains('active')) {
+                menuBtn.innerHTML = '✕';
+            } else {
+                menuBtn.innerHTML = '☰';
+            }
+        }
+
+        // Handle resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('overlay');
+                const menuBtn = document.getElementById('mobileMenuBtn');
+                const body = document.body;
+                
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                menuBtn.classList.remove('active');
+                body.classList.remove('menu-open');
+                menuBtn.innerHTML = '☰';
+            }
+        });
+
+        // Close sidebar on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar.classList.contains('active')) {
+                    toggleSidebar();
+                }
+            }
+        });
+
+        // Touch swipe to close sidebar
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const sidebar = document.getElementById('sidebar');
+            const swipeThreshold = 100;
+            
+            if (touchEndX > touchStartX + swipeThreshold && sidebar.classList.contains('active')) {
+                toggleSidebar();
+            }
         }
 
         // Scroll animation
@@ -2450,6 +2878,11 @@
                 el.classList.add('visible');
             });
         });
+
+        // Prevent double tap zoom on mobile
+        document.addEventListener('dblclick', function(event) {
+            event.preventDefault();
+        }, { passive: false });
     </script>
 </body>
 </html>
