@@ -1012,7 +1012,7 @@
         <div class="progress-content">
             <div class="progress-spinner"></div>
             <div class="progress-title">Sedang Membuat PDF...</div>
-            <div class="progress-text" id="progressText">Memproses data dan grafik</div>
+            <div class="progress-text" id="progressText">Memproses semua data dan grafik</div>
             <div class="progress-bar-container">
                 <div class="progress-bar-fill" id="progressBarFill"></div>
             </div>
@@ -1076,9 +1076,9 @@
             </div>
             <div class="header-actions">
                 <div class="date-badge">📅 Data: DKB Semester II 2025</div>
-                <button class="download-btn" id="downloadBtn" onclick="downloadAllPDF()">
+                <button class="download-btn" id="downloadBtn" onclick="downloadCompletePDF()">
                     <span class="icon">📥</span>
-                    <span>Download PDF</span>
+                    <span>Download PDF Lengkap</span>
                 </button>
             </div>
         </header>
@@ -2051,7 +2051,7 @@
             return new Promise(resolve => setTimeout(resolve, ms));
         }
 
-        async function downloadAllPDF() {
+        async function downloadCompletePDF() {
             const btn = document.getElementById('downloadBtn');
             const modal = document.getElementById('progressModal');
             
@@ -2065,69 +2065,190 @@
                 const pageWidth = doc.internal.pageSize.getWidth();
                 const pageHeight = doc.internal.pageSize.getHeight();
                 
-                updateProgress(5, 'Membuat halaman judul...');
+                // COVER PAGE
+                updateProgress(2, 'Membuat halaman sampul...');
                 await sleep(200);
                 
+                const gradient = doc.linearGradient(0, 0, pageWidth, 60, 0, 0, 0, 0);
                 doc.setFillColor(30, 41, 59);
-                doc.rect(0, 0, pageWidth, 42, 'F');
+                doc.rect(0, 0, pageWidth, 60, 'F');
                 
                 doc.setTextColor(255, 255, 255);
-                doc.setFontSize(18);
+                doc.setFontSize(16);
                 doc.setFont('helvetica', 'bold');
-                doc.text('DASHBOARD DATA PENDUDUK', pageWidth / 2, 16, { align: 'center' });
-                doc.setFontSize(12);
+                doc.text('PEMERINTAH KABUPATEN KEPULAUAN TANIMBAR', pageWidth / 2, 12, { align: 'center' });
+                doc.setFontSize(13);
                 doc.setFont('helvetica', 'normal');
-                doc.text('Kabupaten Kepulauan Tanimbar', pageWidth / 2, 25, { align: 'center' });
-                doc.setFontSize(10);
-                doc.text('Semester II Tahun 2025', pageWidth / 2, 32, { align: 'center' });
+                doc.text('DINAS KEPENDUDUKAN DAN PENCATATAN SIPIL', pageWidth / 2, 22, { align: 'center' });
+                doc.setFontSize(20);
+                doc.setFont('helvetica', 'bold');
+                doc.text('DASHBOARD DATA PENDUDUK', pageWidth / 2, 38, { align: 'center' });
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Kabupaten Kepulauan Tanimbar', pageWidth / 2, 48, { align: 'center' });
+                doc.setFontSize(12);
+                doc.text('Semester II Tahun 2025', pageWidth / 2, 55, { align: 'center' });
                 
-                let yPos = 52;
+                doc.setTextColor(150, 150, 150);
+                doc.setFontSize(9);
+                doc.text('Data Konsolidasi Bersih (DKB) Semester II 2025', pageWidth / 2, 280, { align: 'center' });
                 
-                updateProgress(15, 'Menyusun ringkasan statistik...');
+                doc.addPage();
+                let yPos = 20;
+                
+                // DAFTAR ISI
+                updateProgress(5, 'Membuat daftar isi...');
                 await sleep(200);
                 
                 doc.setTextColor(30, 41, 59);
-                doc.setFontSize(13);
+                doc.setFontSize(16);
                 doc.setFont('helvetica', 'bold');
-                doc.text('RINGKASAN STATISTIK', 12, yPos);
-                yPos += 6;
+                doc.text('DAFTAR ISI', 14, yPos);
+                yPos += 10;
                 
-                const summaryData = [
-                    ['Total Penduduk', '134,293 jiwa'],
-                    ['Laki-laki', '67,314 jiwa (50.12%)'],
-                    ['Perempuan', '66,979 jiwa (49.88%)'],
-                    ['Rasio Jenis Kelamin', '101'],
-                    ['Kepala Keluarga', '38,439 KK'],
-                    ['Usia Produktif', '87,481 jiwa (65.14%)'],
-                    ['Rasio Ketergantungan', '53.5'],
-                    ['Laju Pertumbuhan', '1.46%']
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                const tocData = [
+                    ['1', 'Ringkasan Eksekutif', '2'],
+                    ['2', 'Informasi Wilayah & Demografi', '3'],
+                    ['3', 'Distribusi Penduduk per Kecamatan', '4'],
+                    ['4', 'Struktur Penduduk (Jenis Kelamin)', '5'],
+                    ['5', 'Status Perkawinan', '6'],
+                    ['6', 'Karakteristik Kepala Keluarga', '7'],
+                    ['7', 'Pendidikan Penduduk', '8'],
+                    ['8', 'Pekerjaan Penduduk', '9'],
+                    ['9', 'Komposisi Agama', '10'],
+                    ['10', 'Vital Statistik (Kelahiran)', '11'],
+                    ['11', 'Vital Statistik (Kematian)', '12'],
+                    ['12', 'Kepemilikan Dokumen Kependudukan', '13'],
+                    ['13', 'Mobilitas Penduduk (Migrasi)', '14'],
+                    ['14', 'Lampiran Grafik', '15']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['No', 'Bab', 'Halaman']],
+                    body: tocData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [59, 130, 246] },
+                    styles: { fontSize: 9, cellPadding: 3 }
+                });
+                
+                doc.addPage();
+                yPos = 20;
+                
+                // BAB 1: RINGKASAN EKSEKUTIF
+                updateProgress(8, 'Menyusun ringkasan eksekutif...');
+                await sleep(200);
+                
+                doc.setFillColor(59, 130, 246);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('BAB 1 - RINGKASAN EKSEKUTIF', 14, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Total Penduduk: 134,293 jiwa', 14, yPos); yPos += 6;
+                doc.text('Laki-laki: 67,314 jiwa (50.12%)', 14, yPos); yPos += 6;
+                doc.text('Perempuan: 66,979 jiwa (49.88%)', 14, yPos); yPos += 6;
+                doc.text('Kepala Keluarga: 38,439 KK', 14, yPos); yPos += 6;
+                doc.text('Usia Produktif (15-64): 87,481 jiwa (65.14%)', 14, yPos); yPos += 6;
+                doc.text('Rasio Ketergantungan: 53.5', 14, yPos); yPos += 6;
+                doc.text('Laju Pertumbuhan: 1.46% (+1,956 jiwa)', 14, yPos); yPos += 6;
+                doc.text('Rasio Jenis Kelamin: 101', 14, yPos); yPos += 10;
+                
+                doc.setFont('helvetica', 'bold');
+                doc.text('Indikator Utama:', 14, yPos); yPos += 6;
+                doc.setFont('helvetica', 'normal');
+                doc.text('- Angka Kelahiran Kasar (CBR): 5.46 per 1,000 penduduk', 14, yPos); yPos += 5;
+                doc.text('- Angka Kelahiran Umum (GFR): 20.17 per 1,000 perempuan 15-49 th', 14, yPos); yPos += 5;
+                doc.text('- Angka Kematian Kasar (CDR): 5.44 per 1,000 penduduk', 14, yPos); yPos += 5;
+                doc.text('- Pertumbuhan Alami: +2 jiwa', 14, yPos); yPos += 5;
+                doc.text('- Migrasi Neto: -3,569 jiwa (negatif)', 14, yPos);
+                
+                doc.addPage();
+                yPos = 20;
+                
+                // BAB 2: INFORMASI WILAYAH
+                updateProgress(12, 'Menyusun informasi wilayah...');
+                await sleep(200);
+                
+                doc.setFillColor(139, 92, 246);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('BAB 2 - INFORMASI WILAYAH & DEMOGRAFI', 14, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                const wilayahData = [
+                    ['Luas Daratan', '10,102.92 Km²'],
+                    ['Luas Perairan', '42,892.28 Km²'],
+                    ['Total Wilayah', '52,995.20 Km²'],
+                    ['Jumlah Kecamatan', '11 Kecamatan'],
+                    ['Kepadatan Rata-rata', '13 jiwa/Km²']
                 ];
                 
                 doc.autoTable({
                     startY: yPos,
                     head: [['Indikator', 'Nilai']],
-                    body: summaryData,
+                    body: wilayahData,
                     theme: 'striped',
-                    headStyles: { fillColor: [59, 130, 246] },
-                    styles: { fontSize: 8, cellPadding: 2.5 }
+                    headStyles: { fillColor: [139, 92, 246] },
+                    styles: { fontSize: 9, cellPadding: 3 }
                 });
                 
                 yPos = doc.lastAutoTable.finalY + 10;
                 
-                updateProgress(30, 'Menyusun data kecamatan...');
-                await sleep(200);
-                
-                if (yPos > 185) {
-                    doc.addPage();
-                    yPos = 18;
-                }
-                
-                doc.setFontSize(13);
+                // Struktur Umur
+                doc.setFontSize(12);
                 doc.setFont('helvetica', 'bold');
-                doc.text('DISTRIBUSI PENDUDUK PER KECAMATAN', 12, yPos);
+                doc.text('Struktur Umur Penduduk:', 14, yPos);
                 yPos += 6;
                 
+                const umurData = [
+                    ['0-14 Tahun', '36,544', '27.21%'],
+                    ['15-64 Tahun', '87,481', '65.14%'],
+                    ['≥65 Tahun', '10,268', '7.65%']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Kelompok Umur', 'Jumlah', 'Persentase']],
+                    body: umurData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [6, 182, 212] },
+                    styles: { fontSize: 9, cellPadding: 3 }
+                });
+                
+                doc.addPage();
+                yPos = 20;
+                
+                // BAB 3: DISTRIBUSI PENDUDUK
+                updateProgress(18, 'Menyusun distribusi penduduk...');
+                await sleep(200);
+                
+                doc.setFillColor(16, 185, 129);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('BAB 3 - DISTRIBUSI PENDUDUK PER KECAMATAN', 14, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                
                 const districtTableData = districtData.labels.map((label, i) => [
+                    (i + 1).toString(),
                     label,
                     districtData.population[i].toLocaleString(),
                     districtData.density[i].toString(),
@@ -2136,93 +2257,521 @@
                 
                 doc.autoTable({
                     startY: yPos,
-                    head: [['Kecamatan', 'Penduduk', 'Kepadatan', 'Pertumbuhan (%)']],
+                    head: [['No', 'Kecamatan', 'Penduduk', 'Kepadatan', 'Pertumbuhan (%)']],
                     body: districtTableData,
                     theme: 'striped',
-                    headStyles: { fillColor: [139, 92, 246] },
-                    styles: { fontSize: 7, cellPadding: 2 }
+                    headStyles: { fillColor: [16, 185, 129] },
+                    styles: { fontSize: 8, cellPadding: 2 }
+                });
+                
+                // Chart
+                yPos = doc.lastAutoTable.finalY + 10;
+                if (yPos > 200) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                
+                try {
+                    const imgData = chartInstances.district.canvas.toDataURL('image/png', 1.0);
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('Grafik Jumlah Penduduk per Kecamatan', 14, yPos);
+                    yPos += 4;
+                    doc.addImage(imgData, 'PNG', 14, yPos, 175, 90);
+                    yPos += 95;
+                } catch (e) {
+                    console.warn('Chart district failed:', e);
+                }
+                
+                doc.addPage();
+                yPos = 20;
+                
+                // BAB 4: JENIS KELAMIN
+                updateProgress(25, 'Menyusun data jenis kelamin...');
+                await sleep(200);
+                
+                doc.setFillColor(245, 158, 11);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('BAB 4 - STRUKTUR JENIS KELAMIN', 14, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                
+                const genderData = [
+                    ['Laki-laki', '67,314', '50.12%'],
+                    ['Perempuan', '66,979', '49.88%'],
+                    ['Total', '134,293', '100%'],
+                    ['Rasio JK', '101', '-']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Jenis Kelamin', 'Jumlah', 'Persentase']],
+                    body: genderData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [245, 158, 11] },
+                    styles: { fontSize: 9, cellPadding: 3 }
                 });
                 
                 yPos = doc.lastAutoTable.finalY + 10;
                 
-                updateProgress(50, 'Menyusun vital statistik...');
-                await sleep(200);
-                
-                if (yPos > 185) {
-                    doc.addPage();
-                    yPos = 18;
-                }
-                
-                doc.setFontSize(13);
+                // Rasio per Kecamatan
+                doc.setFontSize(11);
                 doc.setFont('helvetica', 'bold');
-                doc.text('VITAL STATISTIK', 12, yPos);
+                doc.text('Rasio Jenis Kelamin per Kecamatan:', 14, yPos);
                 yPos += 6;
                 
-                const vitalData = districtData.labels.map((label, i) => [
+                const sexRatioData = districtData.labels.map((label, i) => [
                     label,
-                    districtData.gfr[i],
-                    districtData.cbr[i],
+                    districtData.sexRatio[i]
+                ]);
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Kecamatan', 'Rasio (L per 100 P)']],
+                    body: sexRatioData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [236, 72, 153] },
+                    styles: { fontSize: 8, cellPadding: 2 }
+                });
+                
+                doc.addPage();
+                yPos = 20;
+                
+                // BAB 5: STATUS PERKAWINAN
+                updateProgress(32, 'Menyusun status perkawinan...');
+                await sleep(200);
+                
+                doc.setFillColor(236, 72, 153);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('BAB 5 - STATUS PERKAWINAN', 14, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                
+                const marriageData = [
+                    ['Belum Kawin', '73,503', '54.73%'],
+                    ['Kawin', '55,037', '40.98%'],
+                    ['Cerai Mati', '5,446', '4.06%'],
+                    ['Cerai Hidup', '307', '0.23%'],
+                    ['Total Perkawinan', '922', '-'],
+                    ['Total Perceraian', '231', '-']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Status', 'Jumlah', 'Persentase']],
+                    body: marriageData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [236, 72, 153] },
+                    styles: { fontSize: 9, cellPadding: 3 }
+                });
+                
+                yPos = doc.lastAutoTable.finalY + 10;
+                
+                // Angka Perkawinan
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Angka Perkawinan Kasar per Kecamatan:', 14, yPos);
+                yPos += 6;
+                
+                const marriageRateData = districtData.labels.map((label, i) => [
+                    label,
+                    districtData.marriageRate[i]
+                ]);
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Kecamatan', 'Angka Perkawinan Kasar']],
+                    body: marriageRateData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [168, 85, 247] },
+                    styles: { fontSize: 8, cellPadding: 2 }
+                });
+                
+                doc.addPage();
+                yPos = 20;
+                
+                // BAB 6: KEPALA KELUARGA
+                updateProgress(40, 'Menyusun kepala keluarga...');
+                await sleep(200);
+                
+                doc.setFillColor(16, 185, 129);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('BAB 6 - KARAKTERISTIK KEPALA KELUARGA', 14, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                
+                const kkData = [
+                    ['Total Kepala Keluarga', '40,401'],
+                    ['Laki-laki', '31,504 (77.98%)'],
+                    ['Perempuan', '8,897 (22.02%)'],
+                    ['Rata-rata Anggota', '3-4 orang/KK']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Indikator', 'Nilai']],
+                    body: kkData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [16, 185, 129] },
+                    styles: { fontSize: 9, cellPadding: 3 }
+                });
+                
+                yPos = doc.lastAutoTable.finalY + 10;
+                
+                // Status Kawin KK
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Kepala Keluarga Menurut Status Kawin:', 14, yPos);
+                yPos += 6;
+                
+                const kkStatusData = [
+                    ['Kawin', '27,270', '2,220', '29,490', '73.00%'],
+                    ['Belum Kawin', '2,703', '2,605', '5,308', '13.14%'],
+                    ['Cerai Mati', '1,418', '3,886', '5,304', '13.13%'],
+                    ['Cerai Hidup', '113', '186', '299', '0.74%'],
+                    ['Total', '31,504', '8,897', '40,401', '100%']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Status', 'Laki-laki', 'Perempuan', 'Total', '%']],
+                    body: kkStatusData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [59, 130, 246] },
+                    styles: { fontSize: 8, cellPadding: 2 }
+                });
+                
+                doc.addPage();
+                yPos = 20;
+                
+                // BAB 7: PENDIDIKAN
+                updateProgress(48, 'Menyusun data pendidikan...');
+                await sleep(200);
+                
+                doc.setFillColor(139, 92, 246);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('BAB 7 - PENDIDIKAN PENDUDUK', 14, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                
+                const educationData = [
+                    ['Tidak/Belum Sekolah', '21,753', '16.20%'],
+                    ['SD/Sederajat', '23,032', '17.15%'],
+                    ['SLTP/Sederajat', '21,171', '15.76%'],
+                    ['SLTA/Sederajat', '39,396', '29.34%'],
+                    ['Diploma I/II', '768', '0.57%'],
+                    ['Diploma III', '1,397', '1.04%'],
+                    ['S1/D4', '7,254', '5.40%'],
+                    ['S2', '242', '0.18%'],
+                    ['S3', '14', '0.01%']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Jenjang Pendidikan', 'Jumlah', 'Persentase']],
+                    body: educationData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [139, 92, 246] },
+                    styles: { fontSize: 8, cellPadding: 2 }
+                });
+                
+                doc.addPage();
+                yPos = 20;
+                
+                // BAB 8: PEKERJAAN
+                updateProgress(55, 'Menyusun data pekerjaan...');
+                await sleep(200);
+                
+                doc.setFillColor(6, 182, 212);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('BAB 8 - PEKERJAAN PENDUDUK', 14, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                
+                const employmentData = [
+                    ['Pelajar/Mahasiswa', '39,887', '29.7%'],
+                    ['Belum/Tidak Bekerja', '36,787', '27.4%'],
+                    ['Petani/Pekebun', '29,925', '22.3%'],
+                    ['Mengurus Rumah Tangga', '9,324', '6.9%'],
+                    ['Nelayan/Perikanan', '3,087', '2.3%'],
+                    ['Wiraswasta', '3,887', '2.9%'],
+                    ['PNS/Aparatur', '2,587', '1.9%'],
+                    ['Lainnya', '8,816', '6.6%']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Pekerjaan', 'Jumlah', 'Persentase']],
+                    body: employmentData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [6, 182, 212] },
+                    styles: { fontSize: 8, cellPadding: 2 }
+                });
+                
+                doc.addPage();
+                yPos = 20;
+                
+                // BAB 9: AGAMA
+                updateProgress(62, 'Menyusun data agama...');
+                await sleep(200);
+                
+                doc.setFillColor(245, 158, 11);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('BAB 9 - KOMPOSISI AGAMA', 14, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                
+                const religionData = [
+                    ['Kristen', '82,331', '61.32%'],
+                    ['Katolik', '44,220', '32.93%'],
+                    ['Islam', '7,683', '5.72%'],
+                    ['Hindu', '40', '0.03%'],
+                    ['Buddha', '17', '0.01%'],
+                    ['Lainnya', '2', '0.00%'],
+                    ['Total Kristiani', '-', '94.25%']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Agama', 'Jumlah', 'Persentase']],
+                    body: religionData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [245, 158, 11] },
+                    styles: { fontSize: 9, cellPadding: 3 }
+                });
+                
+                doc.addPage();
+                yPos = 20;
+                
+                // BAB 10: KELAHIRAN
+                updateProgress(68, 'Menyusun vital statistik kelahiran...');
+                await sleep(200);
+                
+                doc.setFillColor(16, 185, 129);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('BAB 10 - VITAL STATISTIK (KELAHIRAN)', 14, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                
+                const birthData = [
+                    ['Total Kelahiran Hidup', '728 bayi'],
+                    ['Angka Kelahiran Kasar (CBR)', '5.46 per 1,000 penduduk'],
+                    ['Angka Kelahiran Umum (GFR)', '20.17 per 1,000 perempuan 15-49 th'],
+                    ['Perempuan Usia Reproduktif', '36,098']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Indikator', 'Nilai']],
+                    body: birthData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [16, 185, 129] },
+                    styles: { fontSize: 9, cellPadding: 3 }
+                });
+                
+                yPos = doc.lastAutoTable.finalY + 10;
+                
+                // GFR per Kecamatan
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Angka Kelahiran Umum (GFR) per Kecamatan:', 14, yPos);
+                yPos += 6;
+                
+                const gfrData = districtData.labels.map((label, i) => [
+                    label,
+                    districtData.gfr[i]
+                ]);
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Kecamatan', 'GFR']],
+                    body: gfrData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [6, 182, 212] },
+                    styles: { fontSize: 8, cellPadding: 2 }
+                });
+                
+                doc.addPage();
+                yPos = 20;
+                
+                // BAB 11: KEMATIAN
+                updateProgress(74, 'Menyusun vital statistik kematian...');
+                await sleep(200);
+                
+                doc.setFillColor(239, 68, 68);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('BAB 11 - VITAL STATISTIK (KEMATIAN)', 14, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                
+                const deathData = [
+                    ['Total Kematian', '726 jiwa'],
+                    ['Angka Kematian Kasar (CDR)', '5.44 per 1,000 penduduk'],
+                    ['Pertumbuhan Alami', '+2 jiwa'],
+                    ['Penduduk Pertengahan Tahun', '133,435']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Indikator', 'Nilai']],
+                    body: deathData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [239, 68, 68] },
+                    styles: { fontSize: 9, cellPadding: 3 }
+                });
+                
+                yPos = doc.lastAutoTable.finalY + 10;
+                
+                // CDR per Kecamatan
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.text('Angka Kematian Kasar (CDR) per Kecamatan:', 14, yPos);
+                yPos += 6;
+                
+                const cdrData = districtData.labels.map((label, i) => [
+                    label,
                     districtData.cdr[i]
                 ]);
                 
                 doc.autoTable({
                     startY: yPos,
-                    head: [['Kecamatan', 'GFR', 'CBR', 'CDR']],
-                    body: vitalData,
+                    head: [['Kecamatan', 'CDR']],
+                    body: cdrData,
                     theme: 'striped',
-                    headStyles: { fillColor: [6, 182, 212] },
-                    styles: { fontSize: 7, cellPadding: 2 }
+                    headStyles: { fillColor: [239, 68, 68] },
+                    styles: { fontSize: 8, cellPadding: 2 }
                 });
                 
-                yPos = doc.lastAutoTable.finalY + 10;
+                doc.addPage();
+                yPos = 20;
                 
-                updateProgress(65, 'Menyusun kepemilikan dokumen...');
+                // BAB 12: DOKUMEN
+                updateProgress(80, 'Menyusun kepemilikan dokumen...');
                 await sleep(200);
                 
-                if (yPos > 185) {
-                    doc.addPage();
-                    yPos = 18;
-                }
-                
-                doc.setFontSize(13);
+                doc.setFillColor(59, 130, 246);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
                 doc.setFont('helvetica', 'bold');
-                doc.text('KEPEMILIKAN DOKUMEN KEPENDUDUKAN', 12, yPos);
-                yPos += 6;
+                doc.text('BAB 12 - KEPEMILIKAN DOKUMEN KEPENDUDUKAN', 14, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
                 
                 const docData = [
-                    ['Kartu Keluarga', '95.10%', '38,439'],
-                    ['KTP Elektronik', '92.96%', '85,260'],
-                    ['Kartu Identitas Anak', '23.51%', '10,010'],
-                    ['Akta Kelahiran (0-17)', '98.84%', '45,105'],
-                    ['Akta Kelahiran (Semua)', '60.74%', '81,570'],
-                    ['Akta Perkawinan', '71.40%', '39,295']
+                    ['Kartu Keluarga (KK)', '38,439', '95.10%', '40,420'],
+                    ['KTP Elektronik', '85,260', '92.96%', '91,721'],
+                    ['Kartu Identitas Anak (KIA)', '10,010', '23.51%', '42,576'],
+                    ['Akta Kelahiran (0-17 th)', '45,105', '98.84%', '45,633'],
+                    ['Akta Kelahiran (0-5 th)', '11,437', '97.38%', '11,745'],
+                    ['Akta Kelahiran (Semua)', '81,570', '60.74%', '134,293'],
+                    ['Akta Perkawinan', '39,295', '71.40%', '55,037']
                 ];
                 
                 doc.autoTable({
                     startY: yPos,
-                    head: [['Dokumen', 'Persentase', 'Jumlah']],
+                    head: [['Dokumen', 'Memiliki', '%', 'Target']],
                     body: docData,
                     theme: 'striped',
-                    headStyles: { fillColor: [16, 185, 129] },
-                    styles: { fontSize: 8, cellPadding: 2.5 }
+                    headStyles: { fillColor: [59, 130, 246] },
+                    styles: { fontSize: 8, cellPadding: 2 }
+                });
+                
+                doc.addPage();
+                yPos = 20;
+                
+                // BAB 13: MIGRASI
+                updateProgress(86, 'Menyusun data migrasi...');
+                await sleep(200);
+                
+                doc.setFillColor(245, 158, 11);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('BAB 13 - MOBILITAS PENDUDUK (MIGRASI)', 14, yPos);
+                yPos += 10;
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'normal');
+                
+                const migrationSummary = [
+                    ['Migrasi Masuk', '4,464', '33 per 1,000'],
+                    ['Migrasi Keluar', '8,033', '60 per 1,000'],
+                    ['Migrasi Neto', '-3,569', '-27 per 1,000'],
+                    ['Pertumbuhan Total', '+1,956', '1.46%']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Indikator', 'Jumlah', 'Rate']],
+                    body: migrationSummary,
+                    theme: 'striped',
+                    headStyles: { fillColor: [245, 158, 11] },
+                    styles: { fontSize: 9, cellPadding: 3 }
                 });
                 
                 yPos = doc.lastAutoTable.finalY + 10;
                 
-                updateProgress(80, 'Menyusun data migrasi...');
-                await sleep(200);
-                
-                if (yPos > 185) {
-                    doc.addPage();
-                    yPos = 18;
-                }
-                
-                doc.setFontSize(13);
+                // Migrasi per Kecamatan
+                doc.setFontSize(11);
                 doc.setFont('helvetica', 'bold');
-                doc.text('MOBILITAS PENDUDUK (MIGRASI)', 12, yPos);
+                doc.text('Migrasi per Kecamatan (per 1,000 penduduk):', 14, yPos);
                 yPos += 6;
                 
-                const migrationData = districtData.labels.map((label, i) => [
+                const migrationKecData = districtData.labels.map((label, i) => [
                     label,
                     districtData.migrationIn[i],
                     districtData.migrationOut[i],
@@ -2232,68 +2781,94 @@
                 doc.autoTable({
                     startY: yPos,
                     head: [['Kecamatan', 'Masuk', 'Keluar', 'Neto']],
-                    body: migrationData,
+                    body: migrationKecData,
                     theme: 'striped',
                     headStyles: { fillColor: [245, 158, 11] },
                     styles: { fontSize: 7, cellPadding: 2 }
                 });
                 
-                updateProgress(90, 'Menyusun grafik...');
+                // LAMPIRAN GRAFIK
+                updateProgress(92, 'Menyusun lampiran grafik...');
                 await sleep(200);
                 
-                const chartsToInclude = ['district', 'density', 'gender', 'gfr', 'cbr', 'cdr', 'documents', 'migration'];
+                doc.addPage();
+                yPos = 20;
+                
+                doc.setFillColor(139, 92, 246);
+                doc.rect(12, yPos - 5, pageWidth - 24, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text('LAMPIRAN - GRAFIK DAN VISUALISASI', 14, yPos);
+                yPos += 10;
+                
+                const chartsToInclude = [
+                    { name: 'district', title: 'Jumlah Penduduk per Kecamatan' },
+                    { name: 'density', title: 'Kepadatan Penduduk' },
+                    { name: 'gender', title: 'Komposisi Jenis Kelamin' },
+                    { name: 'marriage', title: 'Status Perkawinan' },
+                    { name: 'education', title: 'Tingkat Pendidikan' },
+                    { name: 'headEducation', title: 'Pendidikan Kepala Keluarga' },
+                    { name: 'employment', title: 'Distribusi Pekerjaan' },
+                    { name: 'religion', title: 'Komposisi Agama' },
+                    { name: 'gfr', title: 'Angka Kelahiran Umum (GFR)' },
+                    { name: 'cbr', title: 'Angka Kelahiran Kasar (CBR)' },
+                    { name: 'cdr', title: 'Angka Kematian Kasar (CDR)' },
+                    { name: 'documents', title: 'Kepemilikan Dokumen' },
+                    { name: 'migration', title: 'Migrasi Masuk vs Keluar' },
+                    { name: 'growth', title: 'Laju Pertumbuhan Penduduk' }
+                ];
                 
                 for (let i = 0; i < chartsToInclude.length; i++) {
-                    const chartName = chartsToInclude[i];
-                    if (chartInstances[chartName]) {
-                        if (yPos > 195) {
+                    const chart = chartsToInclude[i];
+                    if (chartInstances[chart.name]) {
+                        if (yPos > 210) {
                             doc.addPage();
-                            yPos = 18;
+                            yPos = 20;
                         }
                         
-                        const canvas = chartInstances[chartName].canvas;
-                        
                         try {
-                            const imgData = canvas.toDataURL('image/png', 1.0);
+                            const imgData = chartInstances[chart.name].canvas.toDataURL('image/png', 1.0);
                             
                             doc.setFontSize(10);
                             doc.setFont('helvetica', 'bold');
-                            doc.text('Grafik ' + chartName.charAt(0).toUpperCase() + chartName.slice(1), 12, yPos);
+                            doc.text(chart.title, 14, yPos);
                             yPos += 4;
                             
-                            doc.addImage(imgData, 'PNG', 12, yPos, 175, 90);
-                            yPos += 95;
+                            doc.addImage(imgData, 'PNG', 14, yPos, 175, 85);
+                            yPos += 90;
                             
-                            updateProgress(90 + (i * 1.2), 'Menyusun grafik ' + (i + 1) + ' dari ' + chartsToInclude.length + '...');
+                            updateProgress(92 + (i * 0.5), 'Menyusun grafik ' + (i + 1) + ' dari ' + chartsToInclude.length + '...');
                             await sleep(100);
                         } catch (chartError) {
-                            console.warn('Chart ' + chartName + ' failed:', chartError);
+                            console.warn('Chart ' + chart.name + ' failed:', chartError);
                         }
                     }
                 }
                 
-                updateProgress(98, 'Menyimpan PDF...');
+                // FOOTER ALL PAGES
+                updateProgress(99, 'Menyimpan PDF...');
                 await sleep(200);
                 
                 const pageCount = doc.internal.getNumberOfPages();
                 for (let i = 1; i <= pageCount; i++) {
                     doc.setPage(i);
-                    doc.setFontSize(7);
+                    doc.setFontSize(8);
                     doc.setTextColor(140, 140, 140);
                     doc.text('Halaman ' + i + ' dari ' + pageCount, pageWidth / 2, pageHeight - 9, { align: 'center' });
                     doc.text('Dinas Kependudukan dan Pencatatan Sipil Kab. Kepulauan Tanimbar', pageWidth / 2, pageHeight - 5, { align: 'center' });
                 }
                 
-                doc.save('Dashboard_Penduduk_Tanimbar_2025.pdf');
+                doc.save('PROFIL_KEPENDUDUKAN_TANIMBAR_LENGKAP_2025.pdf');
                 
                 updateProgress(100, 'Selesai!');
-                await sleep(400);
+                await sleep(500);
                 
-                showToast('PDF berhasil diunduh!', 'success');
+                showToast('PDF lengkap berhasil diunduh! (' + pageCount + ' halaman)', 'success');
                 
             } catch (error) {
                 console.error('PDF Error:', error);
-                showToast('Gagal membuat PDF. Silakan coba lagi.', 'error');
+                showToast('Gagal: ' + error.message, 'error');
             } finally {
                 modal.classList.remove('active');
                 btn.classList.remove('loading');
