@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Data Penduduk - Kab. Kepulauan Tanimbar 2025</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/fontsource-inter@5.0.0/index.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/fontsource-poppins@5.0.0/index.css" rel="stylesheet">
     <style>
@@ -107,10 +109,10 @@
 
         .logo-text h1 {
             font-family: 'Poppins', sans-serif;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: white;
-            line-height: 1.2;
+            line-height: 1.3;
         }
 
         .logo-text p {
@@ -207,15 +209,15 @@
 
         .header-title h2 {
             font-family: 'Poppins', sans-serif;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 700;
             color: white;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .header-title p {
             color: var(--gray-400);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .header-actions {
@@ -226,7 +228,7 @@
 
         .date-badge {
             background: rgba(255, 255, 255, 0.1);
-            padding: 10px 20px;
+            padding: 10px 18px;
             border-radius: 10px;
             font-size: 13px;
             color: var(--gray-300);
@@ -236,18 +238,52 @@
             gap: 8px;
         }
 
+        .download-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--gradient-1);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-btn.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .download-btn .icon {
+            font-size: 18px;
+        }
+
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
             margin-bottom: 32px;
         }
 
         .stat-card {
             background: rgba(30, 41, 59, 0.6);
             backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 18px;
+            padding: 22px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
             position: relative;
@@ -290,17 +326,17 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 14px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 22px;
         }
 
         .stat-icon.blue { background: rgba(59, 130, 246, 0.2); }
@@ -313,9 +349,9 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            font-size: 12px;
-            padding: 6px 12px;
-            border-radius: 20px;
+            font-size: 11px;
+            padding: 5px 10px;
+            border-radius: 18px;
             font-weight: 600;
         }
 
@@ -331,29 +367,29 @@
 
         .stat-value {
             font-family: 'Poppins', sans-serif;
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             color: white;
             margin-bottom: 4px;
         }
 
         .stat-label {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--gray-400);
         }
 
         .charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
             margin-bottom: 32px;
         }
 
         .chart-card {
             background: rgba(30, 41, 59, 0.6);
             backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 18px;
+            padding: 22px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -365,59 +401,34 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
         }
 
         .chart-title {
             font-family: 'Poppins', sans-serif;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             color: white;
         }
 
         .chart-subtitle {
-            font-size: 13px;
-            color: var(--gray-400);
-            margin-top: 4px;
-        }
-
-        .chart-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .chart-btn {
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: transparent;
-            color: var(--gray-400);
             font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .chart-btn:hover, .chart-btn.active {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            color: var(--gray-400);
+            margin-top: 3px;
         }
 
         .chart-container {
             position: relative;
-            height: 300px;
-        }
-
-        .chart-container.small {
-            height: 250px;
+            height: 280px;
         }
 
         .table-card {
             background: rgba(30, 41, 59, 0.6);
             backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 18px;
+            padding: 22px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 32px;
             overflow-x: auto;
@@ -427,14 +438,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
         }
 
         .table-title {
             font-family: 'Poppins', sans-serif;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             color: white;
         }
@@ -442,19 +453,19 @@
         .data-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 600px;
+            min-width: 500px;
         }
 
         .data-table th,
         .data-table td {
-            padding: 14px 16px;
+            padding: 12px 14px;
             text-align: left;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             white-space: nowrap;
         }
 
         .data-table th {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: var(--gray-400);
             text-transform: uppercase;
@@ -462,7 +473,7 @@
         }
 
         .data-table td {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--gray-200);
         }
 
@@ -470,28 +481,10 @@
             background: rgba(255, 255, 255, 0.02);
         }
 
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 1s ease;
-        }
-
-        .progress-fill.high { background: var(--gradient-4); }
-        .progress-fill.medium { background: var(--gradient-3); }
-        .progress-fill.low { background: var(--gradient-2); }
-
         .badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 18px;
+            font-size: 11px;
             font-weight: 600;
             white-space: nowrap;
         }
@@ -503,16 +496,16 @@
 
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
             margin-bottom: 32px;
         }
 
         .info-card {
             background: rgba(30, 41, 59, 0.6);
             backdrop-filter: blur(20px);
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 18px;
+            padding: 22px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -520,23 +513,23 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .info-card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             flex-shrink: 0;
         }
 
         .info-card-title {
             font-family: 'Poppins', sans-serif;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             color: white;
         }
@@ -549,10 +542,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 0;
+            padding: 10px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
 
         .info-item:last-child {
@@ -560,7 +553,7 @@
         }
 
         .info-item-label {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--gray-400);
         }
 
@@ -571,20 +564,20 @@
 
         .section-title {
             font-family: 'Poppins', sans-serif;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             color: white;
-            margin-bottom: 24px;
+            margin-bottom: 22px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
         }
 
         .section-title::before {
             content: '';
             width: 4px;
-            height: 28px;
+            height: 26px;
             background: var(--gradient-3);
             border-radius: 2px;
         }
@@ -592,17 +585,17 @@
         .tabs {
             display: flex;
             gap: 8px;
-            margin-bottom: 24px;
+            margin-bottom: 22px;
             flex-wrap: wrap;
         }
 
         .tab-btn {
-            padding: 12px 24px;
-            border-radius: 12px;
+            padding: 10px 20px;
+            border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             background: rgba(30, 41, 59, 0.6);
             color: var(--gray-400);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -644,19 +637,18 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Mobile Navigation Styles */
         .mobile-header {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            height: 70px;
+            height: 65px;
             background: rgba(30, 41, 59, 0.98);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             z-index: 999;
-            padding: 0 16px;
+            padding: 0 14px;
             align-items: center;
             justify-content: space-between;
         }
@@ -664,23 +656,23 @@
         .mobile-header-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .mobile-logo {
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             background: var(--gradient-3);
-            border-radius: 10px;
+            border-radius: 9px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
         }
 
         .mobile-logo-text {
             font-family: 'Poppins', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             color: white;
             line-height: 1.2;
@@ -688,35 +680,18 @@
 
         .mobile-menu-btn {
             display: none;
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 46px;
+            height: 46px;
+            border-radius: 10px;
             background: var(--gradient-1);
             border: none;
             color: white;
-            font-size: 24px;
+            font-size: 22px;
             cursor: pointer;
             box-shadow: var(--shadow-lg);
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .mobile-menu-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .mobile-menu-btn:active::before {
-            left: 100%;
         }
 
         .mobile-menu-btn.active {
@@ -743,224 +718,88 @@
             opacity: 1;
         }
 
-        /* Tablet Styles */
         @media (max-width: 1200px) {
             .charts-grid {
                 grid-template-columns: 1fr;
             }
-
             .main-content {
-                padding: 24px 20px;
+                padding: 20px;
             }
         }
 
-        /* Mobile Styles */
         @media (max-width: 1024px) {
             .sidebar {
                 transform: translateX(-100%);
-                width: 300px;
+                width: 290px;
                 box-shadow: var(--shadow-xl);
             }
-
             .sidebar.active {
                 transform: translateX(0);
             }
-
             .main-content {
                 margin-left: 0;
-                padding-top: 90px;
+                padding-top: 85px;
             }
-
             .mobile-header {
                 display: flex;
             }
-
             .mobile-menu-btn {
                 display: flex;
             }
-
             .header {
                 flex-direction: column;
                 align-items: flex-start;
-                margin-bottom: 24px;
+                margin-bottom: 22px;
             }
-
             .header-title h2 {
-                font-size: 22px;
+                font-size: 20px;
             }
-
             .header-actions {
                 width: 100%;
                 justify-content: space-between;
             }
-
-            .date-badge {
-                padding: 8px 16px;
-                font-size: 12px;
-            }
-
             .stats-grid {
                 grid-template-columns: 1fr;
-                gap: 16px;
+                gap: 14px;
             }
-
             .stat-value {
-                font-size: 28px;
-            }
-
-            .section-title {
-                font-size: 18px;
-            }
-
-            .chart-container {
-                height: 280px;
-            }
-
-            .tabs {
-                gap: 6px;
-            }
-
-            .tab-btn {
-                padding: 10px 16px;
-                font-size: 13px;
-            }
-
-            .info-grid {
-                grid-template-columns: 1fr;
+                font-size: 26px;
             }
         }
 
         @media (max-width: 768px) {
-            .sidebar {
-                width: 280px;
-            }
-
             .main-content {
-                padding: 80px 16px 24px;
+                padding: 75px 14px 20px;
             }
-
             .header-title h2 {
-                font-size: 20px;
+                font-size: 18px;
             }
-
-            .header-title p {
-                font-size: 12px;
-            }
-
             .stat-card {
-                padding: 20px;
+                padding: 18px;
             }
-
             .stat-value {
                 font-size: 24px;
             }
-
-            .stat-icon {
-                width: 44px;
-                height: 44px;
-                font-size: 20px;
+            .download-btn span {
+                display: none;
             }
-
-            .chart-card {
-                padding: 16px;
-            }
-
-            .chart-title {
-                font-size: 16px;
-            }
-
-            .table-card {
-                padding: 16px;
-            }
-
-            .data-table th,
-            .data-table td {
-                padding: 10px 12px;
-                font-size: 12px;
-            }
-
-            .badge {
-                padding: 4px 10px;
-                font-size: 11px;
-            }
-
-            .info-card {
-                padding: 16px;
-            }
-
-            .info-card-title {
-                font-size: 14px;
-            }
-
             .section-title {
-                font-size: 16px;
-            }
-
-            .tabs {
-                overflow-x: auto;
-                flex-wrap: nowrap;
-                padding-bottom: 8px;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .tab-btn {
-                flex-shrink: 0;
-                padding: 10px 18px;
-            }
-
-            .mobile-logo-text {
-                font-size: 12px;
-            }
-
-            .mobile-logo {
-                width: 36px;
-                height: 36px;
-                font-size: 18px;
+                font-size: 17px;
             }
         }
 
-        @media (max-width: 480px) {
-            .stat-value {
-                font-size: 22px;
-            }
-
-            .stat-trend {
-                font-size: 11px;
-                padding: 4px 10px;
-            }
-
-            .chart-container {
-                height: 240px;
-            }
-
-            .date-badge {
-                font-size: 11px;
-                padding: 6px 12px;
-            }
-
-            .nav-link {
-                padding: 12px 14px;
-                font-size: 13px;
-            }
-
-            .nav-icon {
-                font-size: 16px;
-            }
-        }
-
-        /* Navigation close button for mobile */
         .nav-close-btn {
             display: none;
             position: absolute;
-            top: 16px;
-            right: 16px;
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            top: 14px;
+            right: 14px;
+            width: 38px;
+            height: 38px;
+            border-radius: 9px;
             background: rgba(239, 68, 68, 0.2);
             border: none;
             color: var(--danger);
-            font-size: 20px;
+            font-size: 18px;
             cursor: pointer;
             align-items: center;
             justify-content: center;
@@ -976,59 +815,19 @@
             .nav-close-btn {
                 display: flex;
             }
-
             .sidebar-header {
-                padding-right: 50px;
+                padding-right: 48px;
             }
         }
 
-        /* Swipe indicator for mobile tabs */
         .tabs-container {
             position: relative;
         }
 
-        .tabs-container::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 30px;
-            background: linear-gradient(90deg, transparent, rgba(30, 41, 59, 0.6));
-            pointer-events: none;
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .tabs-container::after {
-                display: block;
-            }
-        }
-
-        /* Touch feedback for mobile */
-        .nav-link:active,
-        .tab-btn:active,
-        .chart-btn:active {
-            transform: scale(0.98);
-        }
-
-        @media (max-width: 1024px) {
-            .nav-link:active {
-                background: rgba(255, 255, 255, 0.15);
-            }
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Prevent body scroll when mobile menu is open */
         body.menu-open {
             overflow: hidden;
         }
 
-        /* Animation for sidebar items */
         .nav-item {
             opacity: 0;
             transform: translateX(-20px);
@@ -1055,30 +854,9 @@
                 opacity: 1;
                 transform: none;
             }
-
             .sidebar.active .nav-item {
                 animation: slideIn 0.3s ease forwards;
             }
-        }
-
-        .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 200px;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top-color: var(--primary-light);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
 
         .animate-on-scroll {
@@ -1091,24 +869,158 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(30, 41, 59, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow-xl);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 10000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast-icon {
+            font-size: 18px;
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: var(--gray-200);
+        }
+
+        @media (max-width: 768px) {
+            .toast {
+                left: 14px;
+                right: 14px;
+                bottom: 14px;
+            }
+        }
+
+        .progress-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+        }
+
+        .progress-modal.active {
+            display: flex;
+        }
+
+        .progress-content {
+            background: rgba(30, 41, 59, 0.98);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 35px;
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+        }
+
+        .progress-spinner {
+            width: 55px;
+            height: 55px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary-light);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 18px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .progress-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 17px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 6px;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            color: var(--gray-400);
+            margin-bottom: 18px;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 7px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
     </style>
 </head>
 <body>
-    <!-- Mobile Header -->
     <header class="mobile-header">
         <div class="mobile-header-left">
             <div class="mobile-logo">📊</div>
             <span class="mobile-logo-text">Dashboard<br>Demografi</span>
         </div>
-        <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()" aria-label="Toggle Menu">
-            ☰
-        </button>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleSidebar()">☰</button>
     </header>
 
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toastIcon">✓</span>
+        <span class="toast-message" id="toastMessage">Download berhasil!</span>
+    </div>
+
+    <div class="progress-modal" id="progressModal">
+        <div class="progress-content">
+            <div class="progress-spinner"></div>
+            <div class="progress-title">Sedang Membuat PDF...</div>
+            <div class="progress-text" id="progressText">Memproses data dan grafik</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="progressBarFill"></div>
+            </div>
+        </div>
+    </div>
+
     <aside class="sidebar" id="sidebar">
-        <button class="nav-close-btn" onclick="toggleSidebar()" aria-label="Close Menu">✕</button>
+        <button class="nav-close-btn" onclick="toggleSidebar()">✕</button>
         <div class="sidebar-header">
             <div class="logo-icon">📊</div>
             <div class="logo-text">
@@ -1163,13 +1075,14 @@
                 <p>Semester II Tahun 2025 - Kabupaten Kepulauan Tanimbar</p>
             </div>
             <div class="header-actions">
-                <div class="date-badge">
-                    📅 Data Per: Desember 2025
-                </div>
+                <div class="date-badge">📅 Data: DKB Semester II 2025</div>
+                <button class="download-btn" id="downloadBtn" onclick="downloadAllPDF()">
+                    <span class="icon">📥</span>
+                    <span>Download PDF</span>
+                </button>
             </div>
         </header>
 
-        <!-- OVERVIEW SECTION -->
         <div id="overview" class="tab-content active">
             <div class="stats-grid">
                 <div class="stat-card animate-on-scroll">
@@ -1183,7 +1096,7 @@
                 <div class="stat-card animate-on-scroll">
                     <div class="stat-header">
                         <div class="stat-icon purple">👨</div>
-                        <div class="stat-trend up">↑ 50.12%</div>
+                        <div class="stat-trend up">50.12%</div>
                     </div>
                     <div class="stat-value">67,314</div>
                     <div class="stat-label">Penduduk Laki-laki</div>
@@ -1191,7 +1104,7 @@
                 <div class="stat-card animate-on-scroll">
                     <div class="stat-header">
                         <div class="stat-icon cyan">👩</div>
-                        <div class="stat-trend up">↑ 49.88%</div>
+                        <div class="stat-trend up">49.88%</div>
                     </div>
                     <div class="stat-value">66,979</div>
                     <div class="stat-label">Penduduk Perempuan</div>
@@ -1199,7 +1112,7 @@
                 <div class="stat-card animate-on-scroll">
                     <div class="stat-header">
                         <div class="stat-icon green">🏠</div>
-                        <div class="stat-trend up">↑ 95.10%</div>
+                        <div class="stat-trend up">95.10%</div>
                     </div>
                     <div class="stat-value">38,439</div>
                     <div class="stat-label">Kepala Keluarga</div>
@@ -1207,9 +1120,9 @@
                 <div class="stat-card animate-on-scroll">
                     <div class="stat-header">
                         <div class="stat-icon orange">📈</div>
-                        <div class="stat-trend up">↑ 53.5</div>
+                        <div class="stat-trend up">65.14%</div>
                     </div>
-                    <div class="stat-value">65.14%</div>
+                    <div class="stat-value">87,481</div>
                     <div class="stat-label">Usia Produktif</div>
                 </div>
             </div>
@@ -1285,51 +1198,32 @@
                         </li>
                         <li class="info-item">
                             <span class="info-item-label">Usia 0-14 Tahun</span>
-                            <span class="info-item-value">27.21%</span>
+                            <span class="info-item-value">36,544 (27.21%)</span>
                         </li>
                         <li class="info-item">
                             <span class="info-item-label">Usia 15-64 Tahun</span>
-                            <span class="info-item-value">65.14%</span>
+                            <span class="info-item-value">87,481 (65.14%)</span>
                         </li>
                         <li class="info-item">
                             <span class="info-item-label">Usia ≥65 Tahun</span>
-                            <span class="info-item-value">7.65%</span>
+                            <span class="info-item-value">10,268 (7.65%)</span>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <!-- POPULATION SECTION -->
         <div id="population" class="tab-content">
             <h3 class="section-title">Struktur dan Distribusi Penduduk</h3>
-            
             <div class="tabs-container">
                 <div class="tabs">
-                    <button class="tab-btn active" onclick="switchTab('pop-age', this)">Piramida Usia</button>
-                    <button class="tab-btn" onclick="switchTab('pop-gender', this)">Jenis Kelamin</button>
+                    <button class="tab-btn active" onclick="switchTab('pop-gender', this)">Jenis Kelamin</button>
                     <button class="tab-btn" onclick="switchTab('pop-marriage', this)">Status Perkawinan</button>
                     <button class="tab-btn" onclick="switchTab('pop-family', this)">Keluarga</button>
                 </div>
             </div>
 
-            <div id="pop-age" class="tab-subcontent active">
-                <div class="charts-grid">
-                    <div class="chart-card full-width">
-                        <div class="chart-header">
-                            <div>
-                                <div class="chart-title">Piramida Penduduk</div>
-                                <div class="chart-subtitle">Struktur Usia Penduduk Kabupaten Kepulauan Tanimbar</div>
-                            </div>
-                        </div>
-                        <div class="chart-container" style="height: 400px;">
-                            <canvas id="pyramidChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="pop-gender" class="tab-subcontent">
+            <div id="pop-gender" class="tab-subcontent active">
                 <div class="charts-grid">
                     <div class="chart-card">
                         <div class="chart-header">
@@ -1379,17 +1273,6 @@
                         <div class="chart-container">
                             <canvas id="marriageRateChart"></canvas>
                         </div>
-                    </div>
-                </div>
-                <div class="chart-card full-width" style="margin-top: 24px;">
-                    <div class="chart-header">
-                        <div>
-                            <div class="chart-title">Angka Perceraian per Kecamatan</div>
-                            <div class="chart-subtitle">Per 1,000 Penduduk</div>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="divorceChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -1451,16 +1334,13 @@
             </div>
         </div>
 
-        <!-- SOCIAL ECONOMIC SECTION -->
         <div id="social" class="tab-content">
             <h3 class="section-title">Karakteristik Sosial Ekonomi</h3>
-
             <div class="tabs-container">
                 <div class="tabs">
                     <button class="tab-btn active" onclick="switchTab('soc-education', this)">Pendidikan</button>
                     <button class="tab-btn" onclick="switchTab('soc-employment', this)">Pekerjaan</button>
                     <button class="tab-btn" onclick="switchTab('soc-religion', this)">Agama</button>
-                    <button class="tab-btn" onclick="switchTab('soc-disability', this)">Disabilitas</button>
                 </div>
             </div>
 
@@ -1489,110 +1369,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="info-grid" style="margin-top: 24px;">
-                    <div class="info-card">
-                        <div class="info-card-header">
-                            <div class="info-card-icon" style="background: rgba(16, 185, 129, 0.2);">✅</div>
-                            <div class="info-card-title">Capaian Pendidikan</div>
-                        </div>
-                        <ul class="info-list">
-                            <li class="info-item">
-                                <span class="info-item-label">SLTA/Sederajat</span>
-                                <span class="info-item-value">39,396 (29.34%)</span>
-                            </li>
-                            <li class="info-item">
-                                <span class="info-item-label">SD/Sederajat</span>
-                                <span class="info-item-value">23,032 (17.15%)</span>
-                            </li>
-                            <li class="info-item">
-                                <span class="info-item-label">SLTP/Sederajat</span>
-                                <span class="info-item-value">21,171 (15.76%)</span>
-                            </li>
-                            <li class="info-item">
-                                <span class="info-item-label">Diploma IV/S1</span>
-                                <span class="info-item-value">7,254 (5.40%)</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-card-header">
-                            <div class="info-card-icon" style="background: rgba(245, 158, 11, 0.2);">⚠️</div>
-                            <div class="info-card-title">Tantangan</div>
-                        </div>
-                        <ul class="info-list">
-                            <li class="info-item">
-                                <span class="info-item-label">Tidak/Belum Sekolah</span>
-                                <span class="info-item-value">21,753 (16.20%)</span>
-                            </li>
-                            <li class="info-item">
-                                <span class="info-item-label">S2/S3</span>
-                                <span class="info-item-value">&lt; 0.2%</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
             </div>
 
             <div id="soc-employment" class="tab-subcontent">
-                <div class="charts-grid">
-                    <div class="chart-card full-width">
-                        <div class="chart-header">
-                            <div>
-                                <div class="chart-title">Distribusi Pekerjaan Penduduk</div>
-                                <div class="chart-subtitle">Jenis Mata Pencaharian Utama</div>
-                            </div>
-                        </div>
-                        <div class="chart-container" style="height: 350px;">
-                            <canvas id="employmentChart"></canvas>
+                <div class="chart-card full-width">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Distribusi Pekerjaan Penduduk</div>
+                            <div class="chart-subtitle">Jenis Mata Pencaharian Utama</div>
                         </div>
                     </div>
-                </div>
-                <div class="table-card" style="margin-top: 24px;">
-                    <div class="table-header">
-                        <div class="table-title">Pekerjaan Kepala Keluarga</div>
+                    <div class="chart-container" style="height: 330px;">
+                        <canvas id="employmentChart"></canvas>
                     </div>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>Pekerjaan</th>
-                                <th>Jumlah</th>
-                                <th>Persentase</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Pertanian/Peternakan</td>
-                                <td>19,136</td>
-                                <td>47.37%</td>
-                                <td><span class="badge badge-success">Dominan</span></td>
-                            </tr>
-                            <tr>
-                                <td>Belum/Tidak Bekerja</td>
-                                <td>5,270</td>
-                                <td>13.04%</td>
-                                <td><span class="badge badge-warning">Perlu Perhatian</span></td>
-                            </tr>
-                            <tr>
-                                <td>Wiraswasta</td>
-                                <td>4,950</td>
-                                <td>12.25%</td>
-                                <td><span class="badge badge-info">Aktif</span></td>
-                            </tr>
-                            <tr>
-                                <td>Nelayan</td>
-                                <td>2,959</td>
-                                <td>7.32%</td>
-                                <td><span class="badge badge-info">Aktif</span></td>
-                            </tr>
-                            <tr>
-                                <td>Aparatur/Pejabat Negara</td>
-                                <td>2,587</td>
-                                <td>6.40%</td>
-                                <td><span class="badge badge-success">Stabil</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
 
@@ -1628,14 +1417,6 @@
                                 <span class="info-item-value">7,683 (5.72%)</span>
                             </li>
                             <li class="info-item">
-                                <span class="info-item-label">Hindu</span>
-                                <span class="info-item-value">40 (0.03%)</span>
-                            </li>
-                            <li class="info-item">
-                                <span class="info-item-label">Buddha</span>
-                                <span class="info-item-value">17 (0.01%)</span>
-                            </li>
-                            <li class="info-item">
                                 <span class="info-item-label">Total Kristiani</span>
                                 <span class="info-item-value">94.25%</span>
                             </li>
@@ -1643,61 +1424,15 @@
                     </div>
                 </div>
             </div>
-
-            <div id="soc-disability" class="tab-subcontent">
-                <div class="charts-grid">
-                    <div class="chart-card">
-                        <div class="chart-header">
-                            <div>
-                                <div class="chart-title">Jenis Disabilitas</div>
-                                <div class="chart-subtitle">Total: 637 jiwa</div>
-                            </div>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="disabilityChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-card-header">
-                            <div class="info-card-icon" style="background: rgba(124, 58, 237, 0.2);">ℹ️</div>
-                            <div class="info-card-title">Informasi Disabilitas</div>
-                        </div>
-                        <ul class="info-list">
-                            <li class="info-item">
-                                <span class="info-item-label">Total Penyandang</span>
-                                <span class="info-item-value">637 jiwa</span>
-                            </li>
-                            <li class="info-item">
-                                <span class="info-item-label">% dari Total Penduduk</span>
-                                <span class="info-item-value">0.47%</span>
-                            </li>
-                            <li class="info-item">
-                                <span class="info-item-label">Disabilitas Fisik</span>
-                                <span class="info-item-value">347 (54.47%)</span>
-                            </li>
-                            <li class="info-item">
-                                <span class="info-item-label">Disabilitas Rungu/Wicara</span>
-                                <span class="info-item-value">74 (11.62%)</span>
-                            </li>
-                            <li class="info-item">
-                                <span class="info-item-label">Disabilitas Mental/Jiwa</span>
-                                <span class="info-item-value">68 (10.68%)</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
         </div>
 
-        <!-- VITAL STATISTICS SECTION -->
         <div id="vital" class="tab-content">
             <h3 class="section-title">Vital Statistik (Kelahiran & Kematian)</h3>
-
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon green">👶</div>
-                        <div class="stat-trend up">↑ 728</div>
+                        <div class="stat-trend up">728 bayi</div>
                     </div>
                     <div class="stat-value">5.46</div>
                     <div class="stat-label">Angka Kelahiran Kasar (CBR)</div>
@@ -1705,7 +1440,7 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon blue">🤰</div>
-                        <div class="stat-trend up">↑ 20.17</div>
+                        <div class="stat-trend up">20.17</div>
                     </div>
                     <div class="stat-value">20.17</div>
                     <div class="stat-label">Angka Kelahiran Umum (GFR)</div>
@@ -1713,7 +1448,7 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon purple">⚰️</div>
-                        <div class="stat-trend down">↓ 726</div>
+                        <div class="stat-trend down">726 jiwa</div>
                     </div>
                     <div class="stat-value">5.44</div>
                     <div class="stat-label">Angka Kematian Kasar (CDR)</div>
@@ -1721,9 +1456,9 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon cyan">📈</div>
-                        <div class="stat-trend up">↑ +2</div>
+                        <div class="stat-trend up">+2 jiwa</div>
                     </div>
-                    <div class="stat-value">0.01</div>
+                    <div class="stat-value">0.02</div>
                     <div class="stat-label">Pertumbuhan Alami (per 1000)</div>
                 </div>
             </div>
@@ -1753,7 +1488,7 @@
                 </div>
             </div>
 
-            <div class="chart-card full-width" style="margin-top: 24px;">
+            <div class="chart-card full-width">
                 <div class="chart-header">
                     <div>
                         <div class="chart-title">Angka Kematian Kasar per Kecamatan</div>
@@ -1764,71 +1499,15 @@
                     <canvas id="cdrChart"></canvas>
                 </div>
             </div>
-
-            <div class="table-card" style="margin-top: 24px;">
-                <div class="table-header">
-                    <div class="table-title">Ringkasan Vital Statistik per Kecamatan</div>
-                </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Kecamatan</th>
-                            <th>GFR</th>
-                            <th>CBR</th>
-                            <th>CDR</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Molu Maru</td>
-                            <td>33.51</td>
-                            <td>8.94</td>
-                            <td>6.52</td>
-                            <td><span class="badge badge-warning">Tinggi</span></td>
-                        </tr>
-                        <tr>
-                            <td>Nirunmas</td>
-                            <td>32.31</td>
-                            <td>8.37</td>
-                            <td>3.51</td>
-                            <td><span class="badge badge-warning">Tinggi</span></td>
-                        </tr>
-                        <tr>
-                            <td>Tanimbar Selatan</td>
-                            <td>22.01</td>
-                            <td>6.23</td>
-                            <td>6.31</td>
-                            <td><span class="badge badge-info">Sedang</span></td>
-                        </tr>
-                        <tr>
-                            <td>Kormomolin</td>
-                            <td>21.78</td>
-                            <td>5.43</td>
-                            <td>8.40</td>
-                            <td><span class="badge badge-danger">CDR Tinggi</span></td>
-                        </tr>
-                        <tr>
-                            <td>Wuarlabobar</td>
-                            <td>13.59</td>
-                            <td>3.68</td>
-                            <td>5.15</td>
-                            <td><span class="badge badge-success">Rendah</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
 
-        <!-- DOCUMENTS SECTION -->
         <div id="documents" class="tab-content">
             <h3 class="section-title">Kepemilikan Dokumen Kependudukan</h3>
-
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon blue">📋</div>
-                        <div class="stat-trend up">↑ 95.10%</div>
+                        <div class="stat-trend up">95.10%</div>
                     </div>
                     <div class="stat-value">38,439</div>
                     <div class="stat-label">Kartu Keluarga</div>
@@ -1836,7 +1515,7 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon purple">🆔</div>
-                        <div class="stat-trend up">↑ 92.96%</div>
+                        <div class="stat-trend up">92.96%</div>
                     </div>
                     <div class="stat-value">85,260</div>
                     <div class="stat-label">KTP Elektronik</div>
@@ -1844,7 +1523,7 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon cyan">👶</div>
-                        <div class="stat-trend down">↓ 23.51%</div>
+                        <div class="stat-trend down">23.51%</div>
                     </div>
                     <div class="stat-value">10,010</div>
                     <div class="stat-label">Kartu Identitas Anak</div>
@@ -1852,14 +1531,14 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon green">📄</div>
-                        <div class="stat-trend up">↑ 98.84%</div>
+                        <div class="stat-trend up">98.84%</div>
                     </div>
                     <div class="stat-value">45,105</div>
                     <div class="stat-label">Akta Kelahiran (0-17 th)</div>
                 </div>
             </div>
 
-            <div class="chart-card full-width" style="margin-bottom: 24px;">
+            <div class="chart-card full-width">
                 <div class="chart-header">
                     <div>
                         <div class="chart-title">Capaian Kepemilikan Dokumen</div>
@@ -1870,132 +1549,15 @@
                     <canvas id="documentsChart"></canvas>
                 </div>
             </div>
-
-            <div class="table-card">
-                <div class="table-header">
-                    <div class="table-title">Detail Kepemilikan Dokumen per Kecamatan</div>
-                </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Kecamatan</th>
-                            <th>Kartu Keluarga</th>
-                            <th>KTP-El</th>
-                            <th>KIA</th>
-                            <th>Akta Kelahiran</th>
-                            <th>Akta Perkawinan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Tanimbar Selatan</td>
-                            <td><span class="badge badge-success">96.51%</span></td>
-                            <td><span class="badge badge-success">94.59%</span></td>
-                            <td><span class="badge badge-warning">25.78%</span></td>
-                            <td><span class="badge badge-success">99.20%</span></td>
-                            <td><span class="badge badge-info">74.46%</span></td>
-                        </tr>
-                        <tr>
-                            <td>Selaru</td>
-                            <td><span class="badge badge-success">94.00%</span></td>
-                            <td><span class="badge badge-success">92.74%</span></td>
-                            <td><span class="badge badge-danger">14.50%</span></td>
-                            <td><span class="badge badge-success">98.19%</span></td>
-                            <td><span class="badge badge-warning">67.41%</span></td>
-                        </tr>
-                        <tr>
-                            <td>Tanimbar Utara</td>
-                            <td><span class="badge badge-success">94.50%</span></td>
-                            <td><span class="badge badge-success">91.77%</span></td>
-                            <td><span class="badge badge-warning">28.50%</span></td>
-                            <td><span class="badge badge-success">98.36%</span></td>
-                            <td><span class="badge badge-info">72.35%</span></td>
-                        </tr>
-                        <tr>
-                            <td>Wermaktian</td>
-                            <td><span class="badge badge-warning">93.00%</span></td>
-                            <td><span class="badge badge-success">91.36%</span></td>
-                            <td><span class="badge badge-danger">8.05%</span></td>
-                            <td><span class="badge badge-success">98.26%</span></td>
-                            <td><span class="badge badge-warning">66.62%</span></td>
-                        </tr>
-                        <tr>
-                            <td>Kormomolin</td>
-                            <td><span class="badge badge-success">96.33%</span></td>
-                            <td><span class="badge badge-success">94.21%</span></td>
-                            <td><span class="badge badge-success">50.38%</span></td>
-                            <td><span class="badge badge-success">99.43%</span></td>
-                            <td><span class="badge badge-info">78.87%</span></td>
-                        </tr>
-                        <tr>
-                            <td>Fordata</td>
-                            <td><span class="badge badge-success">95.98%</span></td>
-                            <td><span class="badge badge-success">93.45%</span></td>
-                            <td><span class="badge badge-warning">29.13%</span></td>
-                            <td><span class="badge badge-success">99.15%</span></td>
-                            <td><span class="badge badge-success">79.46%</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="info-grid" style="margin-top: 24px;">
-                <div class="info-card">
-                    <div class="info-card-header">
-                        <div class="info-card-icon" style="background: rgba(16, 185, 129, 0.2);">✅</div>
-                        <div class="info-card-title">Capaian Baik (>90%)</div>
-                    </div>
-                    <ul class="info-list">
-                        <li class="info-item">
-                            <span class="info-item-label">Kartu Keluarga</span>
-                            <span class="info-item-value">95.10%</span>
-                        </li>
-                        <li class="info-item">
-                            <span class="info-item-label">KTP Elektronik</span>
-                            <span class="info-item-value">92.96%</span>
-                        </li>
-                        <li class="info-item">
-                            <span class="info-item-label">Akta Kelahiran (0-17 th)</span>
-                            <span class="info-item-value">98.84%</span>
-                        </li>
-                        <li class="info-item">
-                            <span class="info-item-label">Akta Kelahiran (0-5 th)</span>
-                            <span class="info-item-value">97.38%</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="info-card">
-                    <div class="info-card-header">
-                        <div class="info-card-icon" style="background: rgba(245, 158, 11, 0.2);">⚠️</div>
-                        <div class="info-card-title">Perlu Perbaikan</div>
-                    </div>
-                    <ul class="info-list">
-                        <li class="info-item">
-                            <span class="info-item-label">Kartu Identitas Anak</span>
-                            <span class="info-item-value">23.51%</span>
-                        </li>
-                        <li class="info-item">
-                            <span class="info-item-label">Akta Kelahiran (Semua)</span>
-                            <span class="info-item-value">60.74%</span>
-                        </li>
-                        <li class="info-item">
-                            <span class="info-item-label">Akta Perkawinan</span>
-                            <span class="info-item-value">71.40%</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
         </div>
 
-        <!-- MIGRATION SECTION -->
         <div id="migration" class="tab-content">
             <h3 class="section-title">Mobilitas Penduduk (Migrasi)</h3>
-
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon green">📥</div>
-                        <div class="stat-trend up">↑ 4,464</div>
+                        <div class="stat-trend up">4,464</div>
                     </div>
                     <div class="stat-value">33</div>
                     <div class="stat-label">Migrasi Masuk (per 1000)</div>
@@ -2003,7 +1565,7 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon red">📤</div>
-                        <div class="stat-trend down">↓ 8,033</div>
+                        <div class="stat-trend down">8,033</div>
                     </div>
                     <div class="stat-value">60</div>
                     <div class="stat-label">Migrasi Keluar (per 1000)</div>
@@ -2011,7 +1573,7 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon orange">📊</div>
-                        <div class="stat-trend down">↓ -3,569</div>
+                        <div class="stat-trend down">-3,569</div>
                     </div>
                     <div class="stat-value">-27</div>
                     <div class="stat-label">Migrasi Neto (per 1000)</div>
@@ -2019,102 +1581,26 @@
                 <div class="stat-card">
                     <div class="stat-header">
                         <div class="stat-icon purple">📈</div>
-                        <div class="stat-trend up">↑ 1.46%</div>
+                        <div class="stat-trend up">1.46%</div>
                     </div>
                     <div class="stat-value">+1,956</div>
-                    <div class="stat-label">Pertumbuhan Total 2024-2025</div>
+                    <div class="stat-label">Pertumbuhan Total</div>
                 </div>
             </div>
 
-            <div class="chart-card full-width" style="margin-bottom: 24px;">
+            <div class="chart-card full-width">
                 <div class="chart-header">
                     <div>
                         <div class="chart-title">Migrasi Masuk vs Keluar per Kecamatan</div>
                         <div class="chart-subtitle">Per 1,000 Penduduk</div>
                     </div>
                 </div>
-                <div class="chart-container" style="height: 350px;">
+                <div class="chart-container" style="height: 330px;">
                     <canvas id="migrationChart"></canvas>
                 </div>
             </div>
 
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div>
-                            <div class="chart-title">Migrasi Keluar per Kecamatan</div>
-                            <div class="chart-subtitle">Per 1,000 Penduduk</div>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="outMigrationChart"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div>
-                            <div class="chart-title">Migrasi Masuk per Kecamatan</div>
-                            <div class="chart-subtitle">Per 1,000 Penduduk</div>
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="inMigrationChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="info-grid" style="margin-top: 24px;">
-                <div class="info-card">
-                    <div class="info-card-header">
-                        <div class="info-card-icon" style="background: rgba(239, 68, 68, 0.2);">🔴</div>
-                        <div class="info-card-title">Migrasi Keluar Tertinggi</div>
-                    </div>
-                    <ul class="info-list">
-                        <li class="info-item">
-                            <span class="info-item-label">Fordata</span>
-                            <span class="info-item-value">85 per 1000</span>
-                        </li>
-                        <li class="info-item">
-                            <span class="info-item-label">Wertamrian</span>
-                            <span class="info-item-value">74 per 1000</span>
-                        </li>
-                        <li class="info-item">
-                            <span class="info-item-label">Tanimbar Selatan</span>
-                            <span class="info-item-value">72 per 1000</span>
-                        </li>
-                        <li class="info-item">
-                            <span class="info-item-label">Wuarlabobar</span>
-                            <span class="info-item-value">62 per 1000</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="info-card">
-                    <div class="info-card-header">
-                        <div class="info-card-icon" style="background: rgba(59, 130, 246, 0.2);">🔵</div>
-                        <div class="info-card-title">Analisis Migrasi</div>
-                    </div>
-                    <ul class="info-list">
-                        <li class="info-item">
-                            <span class="info-item-label">Total Migrasi Masuk</span>
-                            <span class="info-item-value">4,464 jiwa</span>
-                        </li>
-                        <li class="info-item">
-                            <span class="info-item-label">Total Migrasi Keluar</span>
-                            <span class="info-item-value">8,033 jiwa</span>
-                        </li>
-                        <li class="info-item">
-                            <span class="info-item-label">Migrasi Neto</span>
-                            <span class="info-item-value">-3,569 jiwa</span>
-                        </li>
-                        <li class="info-item">
-                            <span class="info-item-label">Status</span>
-                            <span class="info-item-value"><span class="badge badge-danger">Negatif</span></span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="chart-card full-width" style="margin-top: 24px;">
+            <div class="chart-card full-width">
                 <div class="chart-header">
                     <div>
                         <div class="chart-title">Laju Pertumbuhan Penduduk per Kecamatan</div>
@@ -2129,7 +1615,6 @@
     </main>
 
     <script>
-        // Data from PDF
         const districtData = {
             labels: ['Tanimbar Selatan', 'Selaru', 'Tanimbar Utara', 'Wermaktian', 'Wertamrian', 'Wuarlabobar', 'Nirunmas', 'Kormomolin', 'Fordata', 'Molu Maru'],
             population: [40253, 15853, 15257, 14524, 12478, 9572, 8922, 8073, 5142, 4219],
@@ -2140,655 +1625,699 @@
             cbr: [6.23, 4.39, 4.29, 4.29, 5.55, 3.68, 8.37, 5.43, 4.67, 8.94],
             cdr: [6.31, 4.64, 5.21, 2.42, 7.56, 5.15, 3.51, 8.40, 3.50, 6.52],
             marriageRate: [11.04, 5.80, 5.50, 5.20, 5.90, 5.10, 6.20, 6.50, 5.60, 2.66],
-            divorceRate: [2.85, 1.50, 1.20, 0.76, 1.80, 0.53, 1.40, 2.10, 1.30, 1.10],
-            kk: [96.51, 94.00, 94.50, 93.00, 95.59, 95.00, 95.01, 96.33, 95.98, 92.79],
-            ktp: [94.59, 92.74, 91.77, 91.36, 93.08, 89.82, 93.88, 94.21, 93.45, 89.03],
-            kia: [25.78, 14.50, 28.50, 8.05, 32.70, 13.37, 22.00, 50.38, 29.13, 18.00],
-            birthCert: [99.20, 98.19, 98.36, 98.26, 99.50, 98.97, 98.43, 99.43, 99.15, 98.68],
-            marriageCert: [74.46, 67.41, 72.35, 66.62, 68.05, 61.72, 74.34, 78.87, 79.46, 70.80],
             migrationIn: [46, 24, 28, 21, 36, 41, 27, 27, 28, 15],
             migrationOut: [72, 53, 51, 41, 74, 62, 39, 59, 85, 37]
         };
 
-        // Chart.js default config
+        const chartInstances = {};
+
         Chart.defaults.color = '#94a3b8';
         Chart.defaults.font.family = 'Inter';
-        Chart.defaults.font.size = 12;
+        Chart.defaults.font.size = 11;
 
-        // Color schemes
-        const colors = {
-            primary: '#3b82f6',
-            secondary: '#8b5cf6',
-            accent: '#06b6d4',
-            success: '#10b981',
-            warning: '#f59e0b',
-            danger: '#ef4444',
-            gradient1: ['rgba(59, 130, 246, 0.8)', 'rgba(59, 130, 246, 0.2)'],
-            gradient2: ['rgba(139, 92, 246, 0.8)', 'rgba(139, 92, 246, 0.2)'],
-            gradient3: ['rgba(6, 182, 212, 0.8)', 'rgba(6, 182, 212, 0.2)']
-        };
-
-        // District Chart
-        new Chart(document.getElementById('districtChart'), {
-            type: 'bar',
-            data: {
-                labels: districtData.labels,
-                datasets: [{
-                    label: 'Jumlah Penduduk',
-                    data: districtData.population,
-                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                    borderColor: 'rgba(59, 130, 246, 1)',
-                    borderWidth: 1,
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
-                }
-            }
-        });
-
-        // Density Chart
-        new Chart(document.getElementById('densityChart'), {
-            type: 'bar',
-            data: {
-                labels: districtData.labels,
-                datasets: [{
-                    label: 'Kepadatan (jiwa/Km²)',
-                    data: districtData.density,
-                    backgroundColor: 'rgba(139, 92, 246, 0.8)',
-                    borderColor: 'rgba(139, 92, 246, 1)',
-                    borderWidth: 1,
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
-                }
-            }
-        });
-
-        // Gender Chart
-        new Chart(document.getElementById('genderChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Laki-laki', 'Perempuan'],
-                datasets: [{
-                    data: [67314, 66979],
-                    backgroundColor: ['#3b82f6', '#8b5cf6'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { padding: 20, usePointStyle: true }
-                    }
-                }
-            }
-        });
-
-        // Sex Ratio Chart
-        new Chart(document.getElementById('sexRatioChart'), {
-            type: 'bar',
-            data: {
-                labels: districtData.labels,
-                datasets: [{
-                    label: 'Rasio Jenis Kelamin',
-                    data: districtData.sexRatio,
-                    backgroundColor: districtData.sexRatio.map(v => 
-                        v > 102 ? 'rgba(239, 68, 68, 0.8)' : 
-                        v < 98 ? 'rgba(16, 185, 129, 0.8)' : 
-                        'rgba(59, 130, 246, 0.8)'
-                    ),
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        min: 95,
-                        max: 110,
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' }
-                    },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Marriage Status Chart
-        new Chart(document.getElementById('marriageChart'), {
-            type: 'pie',
-            data: {
-                labels: ['Belum Kawin', 'Kawin', 'Cerai Mati', 'Cerai Hidup'],
-                datasets: [{
-                    data: [73503, 55037, 5446, 307],
-                    backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { padding: 15, usePointStyle: true }
-                    }
-                }
-            }
-        });
-
-        // Marriage Rate Chart
-        new Chart(document.getElementById('marriageRateChart'), {
-            type: 'bar',
-            data: {
-                labels: districtData.labels,
-                datasets: [{
-                    label: 'Angka Perkawinan Kasar',
-                    data: districtData.marriageRate,
-                    backgroundColor: 'rgba(16, 185, 129, 0.8)',
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Divorce Chart
-        new Chart(document.getElementById('divorceChart'), {
-            type: 'line',
-            data: {
-                labels: districtData.labels,
-                datasets: [{
-                    label: 'Angka Perceraian Kasar',
-                    data: districtData.divorceRate,
-                    borderColor: '#ef4444',
-                    backgroundColor: 'rgba(239, 68, 68, 0.2)',
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 6,
-                    pointBackgroundColor: '#ef4444'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Education Chart
-        new Chart(document.getElementById('educationChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Tidak/Belum Sekolah', 'SD', 'SLTP', 'SLTA', 'Diploma', 'S1', 'S2', 'S3'],
-                datasets: [{
-                    label: 'Jumlah Penduduk',
-                    data: [21753, 23032, 21171, 39396, 768, 1397, 7254, 242, 14],
-                    backgroundColor: [
-                        'rgba(239, 68, 68, 0.8)',
-                        'rgba(245, 158, 11, 0.8)',
-                        'rgba(59, 130, 246, 0.8)',
-                        'rgba(16, 185, 129, 0.8)',
-                        'rgba(139, 92, 246, 0.8)',
-                        'rgba(6, 182, 212, 0.8)',
-                        'rgba(236, 72, 153, 0.8)',
-                        'rgba(168, 85, 247, 0.8)',
-                        'rgba(192, 132, 252, 0.8)'
-                    ],
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                    y: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Head Education Chart
-        new Chart(document.getElementById('headEducationChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['SLTA', 'SD', 'SLTP', 'S1/D4', 'Lainnya'],
-                datasets: [{
-                    data: [15701, 10777, 7993, 3182, 2748],
-                    backgroundColor: ['#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#64748b'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom', labels: { padding: 15, usePointStyle: true } }
-                }
-            }
-        });
-
-        // Employment Chart
-        new Chart(document.getElementById('employmentChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Pelajar/Mahasiswa', 'Belum/Tidak Bekerja', 'Petani/Pekebun', 'URT', 'Nelayan', 'Wiraswasta', 'PNS', 'Lainnya'],
-                datasets: [{
-                    data: [39887, 36787, 29925, 9324, 3087, 3887, 2587, 8816],
-                    backgroundColor: [
-                        '#3b82f6', '#64748b', '#10b981', '#f59e0b', 
-                        '#06b6d4', '#8b5cf6', '#ef4444', '#ec4899'
-                    ],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'right', labels: { padding: 15, usePointStyle: true, boxWidth: 12 } }
-                }
-            }
-        });
-
-        // Religion Chart
-        new Chart(document.getElementById('religionChart'), {
-            type: 'pie',
-            data: {
-                labels: ['Kristen', 'Katolik', 'Islam', 'Hindu', 'Buddha', 'Lainnya'],
-                datasets: [{
-                    data: [82331, 44220, 7683, 40, 17, 2],
-                    backgroundColor: ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#06b6d4', '#64748b'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom', labels: { padding: 15, usePointStyle: true } }
-                }
-            }
-        });
-
-        // Disability Chart
-        new Chart(document.getElementById('disabilityChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Fisik', 'Rungu/Wicara', 'Mental/Jiwa', 'Netra/Buta', 'Lainnya', 'Fisik & Mental'],
-                datasets: [{
-                    label: 'Jumlah',
-                    data: [347, 74, 68, 62, 53, 33],
-                    backgroundColor: 'rgba(139, 92, 246, 0.8)',
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // GFR Chart
-        new Chart(document.getElementById('gfrChart'), {
-            type: 'bar',
-            data: {
-                labels: districtData.labels,
-                datasets: [{
-                    label: 'GFR',
-                    data: districtData.gfr,
-                    backgroundColor: districtData.gfr.map(v => 
-                        v > 25 ? 'rgba(239, 68, 68, 0.8)' : 
-                        v > 20 ? 'rgba(245, 158, 11, 0.8)' : 
-                        'rgba(16, 185, 129, 0.8)'
-                    ),
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // CBR Chart
-        new Chart(document.getElementById('cbrChart'), {
-            type: 'bar',
-            data: {
-                labels: districtData.labels,
-                datasets: [{
-                    label: 'CBR',
-                    data: districtData.cbr,
-                    backgroundColor: 'rgba(6, 182, 212, 0.8)',
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // CDR Chart
-        new Chart(document.getElementById('cdrChart'), {
-            type: 'bar',
-            data: {
-                labels: districtData.labels,
-                datasets: [{
-                    label: 'CDR',
-                    data: districtData.cdr,
-                    backgroundColor: districtData.cdr.map(v => 
-                        v > 7 ? 'rgba(239, 68, 68, 0.8)' : 
-                        v > 5 ? 'rgba(245, 158, 11, 0.8)' : 
-                        'rgba(16, 185, 129, 0.8)'
-                    ),
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { 
-                    legend: { display: false }
-                },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Documents Chart
-        new Chart(document.getElementById('documentsChart'), {
-            type: 'bar',
-            data: {
-                labels: ['KK', 'KTP-El', 'KIA', 'Akta Kelahiran (0-17)', 'Akta Kelahiran (0-5)', 'Akta Kelahiran (Semua)', 'Akta Perkawinan'],
-                datasets: [{
-                    label: 'Persentase Kepemilikan',
-                    data: [95.10, 92.96, 23.51, 98.84, 97.38, 60.74, 71.40],
-                    backgroundColor: [
-                        'rgba(16, 185, 129, 0.8)',
-                        'rgba(16, 185, 129, 0.8)',
-                        'rgba(239, 68, 68, 0.8)',
-                        'rgba(16, 185, 129, 0.8)',
-                        'rgba(16, 185, 129, 0.8)',
-                        'rgba(245, 158, 11, 0.8)',
-                        'rgba(245, 158, 11, 0.8)'
-                    ],
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { 
-                        min: 0, 
-                        max: 100, 
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: { callback: (v) => v + '%' }
-                    },
-                    y: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Migration Chart
-        new Chart(document.getElementById('migrationChart'), {
-            type: 'bar',
-            data: {
-                labels: districtData.labels,
-                datasets: [
-                    {
-                        label: 'Migrasi Masuk',
-                        data: districtData.migrationIn,
-                        backgroundColor: 'rgba(16, 185, 129, 0.8)',
-                        borderRadius: 8
-                    },
-                    {
-                        label: 'Migrasi Keluar',
-                        data: districtData.migrationOut,
-                        backgroundColor: 'rgba(239, 68, 68, 0.8)',
-                        borderRadius: 8
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { 
-                    legend: { position: 'top', labels: { usePointStyle: true, padding: 20 } }
-                },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Out Migration Chart
-        new Chart(document.getElementById('outMigrationChart'), {
-            type: 'bar',
-            data: {
-                labels: districtData.labels,
-                datasets: [{
-                    label: 'Migrasi Keluar',
-                    data: districtData.migrationOut,
-                    backgroundColor: 'rgba(239, 68, 68, 0.8)',
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // In Migration Chart
-        new Chart(document.getElementById('inMigrationChart'), {
-            type: 'bar',
-            data: {
-                labels: districtData.labels,
-                datasets: [{
-                    label: 'Migrasi Masuk',
-                    data: districtData.migrationIn,
-                    backgroundColor: 'rgba(16, 185, 129, 0.8)',
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Growth Chart
-        new Chart(document.getElementById('growthChart'), {
-            type: 'line',
-            data: {
-                labels: districtData.labels,
-                datasets: [{
-                    label: 'Laju Pertumbuhan (%)',
-                    data: districtData.growth,
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 8,
-                    pointBackgroundColor: districtData.growth.map(v => 
-                        v < 0 ? '#ef4444' : '#10b981'
-                    ),
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { 
-                    legend: { display: false }
-                },
-                scales: {
-                    y: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
-
-        // Pyramid Chart (simplified horizontal bar)
-        const pyramidLabels = ['0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65+'];
-        const pyramidMale = [5200, 5100, 4900, 4700, 4400, 4100, 3800, 3500, 3200, 2900, 2600, 2300, 2000, 1700];
-        const pyramidFemale = [5100, 5000, 4800, 4600, 4300, 4000, 3700, 3400, 3100, 2800, 2500, 2200, 1900, 1800];
-
-        new Chart(document.getElementById('pyramidChart'), {
-            type: 'bar',
-            data: {
-                labels: pyramidLabels,
-                datasets: [
-                    {
-                        label: 'Laki-laki',
-                        data: pyramidMale.map(v => -v),
+        function createCharts() {
+            chartInstances.district = new Chart(document.getElementById('districtChart'), {
+                type: 'bar',
+                data: {
+                    labels: districtData.labels,
+                    datasets: [{
+                        label: 'Jumlah Penduduk',
+                        data: districtData.population,
                         backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                        borderRadius: 4
-                    },
-                    {
-                        label: 'Perempuan',
-                        data: pyramidFemale,
-                        backgroundColor: 'rgba(236, 72, 153, 0.8)',
-                        borderRadius: 4
-                    }
-                ]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { 
-                    legend: { position: 'top', labels: { usePointStyle: true, padding: 20 } },
-                    tooltip: {
-                        callbacks: {
-                            label: (ctx) => Math.abs(ctx.raw).toLocaleString() + ' jiwa'
-                        }
-                    }
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
                 },
-                scales: {
-                    x: {
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: {
-                            callback: (v) => Math.abs(v).toLocaleString()
-                        }
-                    },
-                    y: { grid: { display: false } }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        x: { grid: { display: false } }
+                    }
                 }
-            }
-        });
+            });
 
-        // Navigation functions
+            chartInstances.density = new Chart(document.getElementById('densityChart'), {
+                type: 'bar',
+                data: {
+                    labels: districtData.labels,
+                    datasets: [{
+                        label: 'Kepadatan (jiwa/Km²)',
+                        data: districtData.density,
+                        backgroundColor: 'rgba(139, 92, 246, 0.8)',
+                        borderColor: 'rgba(139, 92, 246, 1)',
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            chartInstances.gender = new Chart(document.getElementById('genderChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Laki-laki', 'Perempuan'],
+                    datasets: [{
+                        data: [67314, 66979],
+                        backgroundColor: ['#3b82f6', '#8b5cf6'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 18, usePointStyle: true } }
+                    }
+                }
+            });
+
+            chartInstances.sexRatio = new Chart(document.getElementById('sexRatioChart'), {
+                type: 'bar',
+                data: {
+                    labels: districtData.labels,
+                    datasets: [{
+                        label: 'Rasio Jenis Kelamin',
+                        data: districtData.sexRatio,
+                        backgroundColor: districtData.sexRatio.map(v => 
+                            v > 102 ? 'rgba(239, 68, 68, 0.8)' : 
+                            v < 98 ? 'rgba(16, 185, 129, 0.8)' : 
+                            'rgba(59, 130, 246, 0.8)'
+                        ),
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: false, min: 95, max: 110, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            chartInstances.marriage = new Chart(document.getElementById('marriageChart'), {
+                type: 'pie',
+                data: {
+                    labels: ['Belum Kawin', 'Kawin', 'Cerai Mati', 'Cerai Hidup'],
+                    datasets: [{
+                        data: [73503, 55037, 5446, 307],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 14, usePointStyle: true } }
+                    }
+                }
+            });
+
+            chartInstances.marriageRate = new Chart(document.getElementById('marriageRateChart'), {
+                type: 'bar',
+                data: {
+                    labels: districtData.labels,
+                    datasets: [{
+                        label: 'Angka Perkawinan Kasar',
+                        data: districtData.marriageRate,
+                        backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            chartInstances.education = new Chart(document.getElementById('educationChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Tidak Sekolah', 'SD', 'SLTP', 'SLTA', 'Diploma', 'S1', 'S2', 'S3'],
+                    datasets: [{
+                        label: 'Jumlah Penduduk',
+                        data: [21753, 23032, 21171, 39396, 768, 7254, 242, 14],
+                        backgroundColor: [
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(139, 92, 246, 0.8)',
+                            'rgba(6, 182, 212, 0.8)',
+                            'rgba(236, 72, 153, 0.8)',
+                            'rgba(168, 85, 247, 0.8)'
+                        ],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+
+            chartInstances.headEducation = new Chart(document.getElementById('headEducationChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['SLTA', 'SD', 'SLTP', 'S1/D4', 'Lainnya'],
+                    datasets: [{
+                        data: [15701, 10777, 7993, 3182, 2748],
+                        backgroundColor: ['#10b981', '#f59e0b', '#3b82f6', '#8b5cf6', '#64748b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 14, usePointStyle: true } }
+                    }
+                }
+            });
+
+            chartInstances.employment = new Chart(document.getElementById('employmentChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pelajar', 'Tidak Bekerja', 'Petani', 'URT', 'Nelayan', 'Wiraswasta', 'PNS', 'Lainnya'],
+                    datasets: [{
+                        data: [39887, 36787, 29925, 9324, 3087, 3887, 2587, 8816],
+                        backgroundColor: [
+                            '#3b82f6', '#64748b', '#10b981', '#f59e0b', 
+                            '#06b6d4', '#8b5cf6', '#ef4444', '#ec4899'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { padding: 14, usePointStyle: true, boxWidth: 10 } }
+                    }
+                }
+            });
+
+            chartInstances.religion = new Chart(document.getElementById('religionChart'), {
+                type: 'pie',
+                data: {
+                    labels: ['Kristen', 'Katolik', 'Islam', 'Lainnya'],
+                    datasets: [{
+                        data: [82331, 44220, 7683, 59],
+                        backgroundColor: ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 14, usePointStyle: true } }
+                    }
+                }
+            });
+
+            chartInstances.gfr = new Chart(document.getElementById('gfrChart'), {
+                type: 'bar',
+                data: {
+                    labels: districtData.labels,
+                    datasets: [{
+                        label: 'GFR',
+                        data: districtData.gfr,
+                        backgroundColor: districtData.gfr.map(v => 
+                            v > 25 ? 'rgba(239, 68, 68, 0.8)' : 
+                            v > 20 ? 'rgba(245, 158, 11, 0.8)' : 
+                            'rgba(16, 185, 129, 0.8)'
+                        ),
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            chartInstances.cbr = new Chart(document.getElementById('cbrChart'), {
+                type: 'bar',
+                data: {
+                    labels: districtData.labels,
+                    datasets: [{
+                        label: 'CBR',
+                        data: districtData.cbr,
+                        backgroundColor: 'rgba(6, 182, 212, 0.8)',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            chartInstances.cdr = new Chart(document.getElementById('cdrChart'), {
+                type: 'bar',
+                data: {
+                    labels: districtData.labels,
+                    datasets: [{
+                        label: 'CDR',
+                        data: districtData.cdr,
+                        backgroundColor: districtData.cdr.map(v => 
+                            v > 7 ? 'rgba(239, 68, 68, 0.8)' : 
+                            v > 5 ? 'rgba(245, 158, 11, 0.8)' : 
+                            'rgba(16, 185, 129, 0.8)'
+                        ),
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            chartInstances.documents = new Chart(document.getElementById('documentsChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['KK', 'KTP-El', 'KIA', 'Akta (0-17)', 'Akta (0-5)', 'Akta (Semua)', 'Akta Nikah'],
+                    datasets: [{
+                        label: 'Persentase',
+                        data: [95.10, 92.96, 23.51, 98.84, 97.38, 60.74, 71.40],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(245, 158, 11, 0.8)'
+                        ],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { min: 0, max: 100, grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { callback: (v) => v + '%' } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+
+            chartInstances.migration = new Chart(document.getElementById('migrationChart'), {
+                type: 'bar',
+                data: {
+                    labels: districtData.labels,
+                    datasets: [
+                        {
+                            label: 'Migrasi Masuk',
+                            data: districtData.migrationIn,
+                            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Migrasi Keluar',
+                            data: districtData.migrationOut,
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top', labels: { usePointStyle: true, padding: 18 } } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            chartInstances.growth = new Chart(document.getElementById('growthChart'), {
+                type: 'line',
+                data: {
+                    labels: districtData.labels,
+                    datasets: [{
+                        label: 'Laju Pertumbuhan (%)',
+                        data: districtData.growth,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 7,
+                        pointBackgroundColor: districtData.growth.map(v => v < 0 ? '#ef4444' : '#10b981'),
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toast.className = 'toast ' + type;
+            toastIcon.textContent = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+            toastMessage.textContent = message;
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function updateProgress(percent, text) {
+            document.getElementById('progressBarFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = text;
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function downloadAllPDF() {
+            const btn = document.getElementById('downloadBtn');
+            const modal = document.getElementById('progressModal');
+            
+            btn.classList.add('loading');
+            btn.disabled = true;
+            modal.classList.add('active');
+            
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                
+                updateProgress(5, 'Membuat halaman judul...');
+                await sleep(200);
+                
+                doc.setFillColor(30, 41, 59);
+                doc.rect(0, 0, pageWidth, 42, 'F');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(18);
+                doc.setFont('helvetica', 'bold');
+                doc.text('DASHBOARD DATA PENDUDUK', pageWidth / 2, 16, { align: 'center' });
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Kabupaten Kepulauan Tanimbar', pageWidth / 2, 25, { align: 'center' });
+                doc.setFontSize(10);
+                doc.text('Semester II Tahun 2025', pageWidth / 2, 32, { align: 'center' });
+                
+                let yPos = 52;
+                
+                updateProgress(15, 'Menyusun ringkasan statistik...');
+                await sleep(200);
+                
+                doc.setTextColor(30, 41, 59);
+                doc.setFontSize(13);
+                doc.setFont('helvetica', 'bold');
+                doc.text('RINGKASAN STATISTIK', 12, yPos);
+                yPos += 6;
+                
+                const summaryData = [
+                    ['Total Penduduk', '134,293 jiwa'],
+                    ['Laki-laki', '67,314 jiwa (50.12%)'],
+                    ['Perempuan', '66,979 jiwa (49.88%)'],
+                    ['Rasio Jenis Kelamin', '101'],
+                    ['Kepala Keluarga', '38,439 KK'],
+                    ['Usia Produktif', '87,481 jiwa (65.14%)'],
+                    ['Rasio Ketergantungan', '53.5'],
+                    ['Laju Pertumbuhan', '1.46%']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Indikator', 'Nilai']],
+                    body: summaryData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [59, 130, 246] },
+                    styles: { fontSize: 8, cellPadding: 2.5 }
+                });
+                
+                yPos = doc.lastAutoTable.finalY + 10;
+                
+                updateProgress(30, 'Menyusun data kecamatan...');
+                await sleep(200);
+                
+                if (yPos > 185) {
+                    doc.addPage();
+                    yPos = 18;
+                }
+                
+                doc.setFontSize(13);
+                doc.setFont('helvetica', 'bold');
+                doc.text('DISTRIBUSI PENDUDUK PER KECAMATAN', 12, yPos);
+                yPos += 6;
+                
+                const districtTableData = districtData.labels.map((label, i) => [
+                    label,
+                    districtData.population[i].toLocaleString(),
+                    districtData.density[i].toString(),
+                    districtData.growth[i] > 0 ? '+' + districtData.growth[i] : districtData.growth[i].toString()
+                ]);
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Kecamatan', 'Penduduk', 'Kepadatan', 'Pertumbuhan (%)']],
+                    body: districtTableData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [139, 92, 246] },
+                    styles: { fontSize: 7, cellPadding: 2 }
+                });
+                
+                yPos = doc.lastAutoTable.finalY + 10;
+                
+                updateProgress(50, 'Menyusun vital statistik...');
+                await sleep(200);
+                
+                if (yPos > 185) {
+                    doc.addPage();
+                    yPos = 18;
+                }
+                
+                doc.setFontSize(13);
+                doc.setFont('helvetica', 'bold');
+                doc.text('VITAL STATISTIK', 12, yPos);
+                yPos += 6;
+                
+                const vitalData = districtData.labels.map((label, i) => [
+                    label,
+                    districtData.gfr[i],
+                    districtData.cbr[i],
+                    districtData.cdr[i]
+                ]);
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Kecamatan', 'GFR', 'CBR', 'CDR']],
+                    body: vitalData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [6, 182, 212] },
+                    styles: { fontSize: 7, cellPadding: 2 }
+                });
+                
+                yPos = doc.lastAutoTable.finalY + 10;
+                
+                updateProgress(65, 'Menyusun kepemilikan dokumen...');
+                await sleep(200);
+                
+                if (yPos > 185) {
+                    doc.addPage();
+                    yPos = 18;
+                }
+                
+                doc.setFontSize(13);
+                doc.setFont('helvetica', 'bold');
+                doc.text('KEPEMILIKAN DOKUMEN KEPENDUDUKAN', 12, yPos);
+                yPos += 6;
+                
+                const docData = [
+                    ['Kartu Keluarga', '95.10%', '38,439'],
+                    ['KTP Elektronik', '92.96%', '85,260'],
+                    ['Kartu Identitas Anak', '23.51%', '10,010'],
+                    ['Akta Kelahiran (0-17)', '98.84%', '45,105'],
+                    ['Akta Kelahiran (Semua)', '60.74%', '81,570'],
+                    ['Akta Perkawinan', '71.40%', '39,295']
+                ];
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Dokumen', 'Persentase', 'Jumlah']],
+                    body: docData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [16, 185, 129] },
+                    styles: { fontSize: 8, cellPadding: 2.5 }
+                });
+                
+                yPos = doc.lastAutoTable.finalY + 10;
+                
+                updateProgress(80, 'Menyusun data migrasi...');
+                await sleep(200);
+                
+                if (yPos > 185) {
+                    doc.addPage();
+                    yPos = 18;
+                }
+                
+                doc.setFontSize(13);
+                doc.setFont('helvetica', 'bold');
+                doc.text('MOBILITAS PENDUDUK (MIGRASI)', 12, yPos);
+                yPos += 6;
+                
+                const migrationData = districtData.labels.map((label, i) => [
+                    label,
+                    districtData.migrationIn[i],
+                    districtData.migrationOut[i],
+                    (districtData.migrationIn[i] - districtData.migrationOut[i]).toString()
+                ]);
+                
+                doc.autoTable({
+                    startY: yPos,
+                    head: [['Kecamatan', 'Masuk', 'Keluar', 'Neto']],
+                    body: migrationData,
+                    theme: 'striped',
+                    headStyles: { fillColor: [245, 158, 11] },
+                    styles: { fontSize: 7, cellPadding: 2 }
+                });
+                
+                updateProgress(90, 'Menyusun grafik...');
+                await sleep(200);
+                
+                const chartsToInclude = ['district', 'density', 'gender', 'gfr', 'cbr', 'cdr', 'documents', 'migration'];
+                
+                for (let i = 0; i < chartsToInclude.length; i++) {
+                    const chartName = chartsToInclude[i];
+                    if (chartInstances[chartName]) {
+                        if (yPos > 195) {
+                            doc.addPage();
+                            yPos = 18;
+                        }
+                        
+                        const canvas = chartInstances[chartName].canvas;
+                        
+                        try {
+                            const imgData = canvas.toDataURL('image/png', 1.0);
+                            
+                            doc.setFontSize(10);
+                            doc.setFont('helvetica', 'bold');
+                            doc.text('Grafik ' + chartName.charAt(0).toUpperCase() + chartName.slice(1), 12, yPos);
+                            yPos += 4;
+                            
+                            doc.addImage(imgData, 'PNG', 12, yPos, 175, 90);
+                            yPos += 95;
+                            
+                            updateProgress(90 + (i * 1.2), 'Menyusun grafik ' + (i + 1) + ' dari ' + chartsToInclude.length + '...');
+                            await sleep(100);
+                        } catch (chartError) {
+                            console.warn('Chart ' + chartName + ' failed:', chartError);
+                        }
+                    }
+                }
+                
+                updateProgress(98, 'Menyimpan PDF...');
+                await sleep(200);
+                
+                const pageCount = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(7);
+                    doc.setTextColor(140, 140, 140);
+                    doc.text('Halaman ' + i + ' dari ' + pageCount, pageWidth / 2, pageHeight - 9, { align: 'center' });
+                    doc.text('Dinas Kependudukan dan Pencatatan Sipil Kab. Kepulauan Tanimbar', pageWidth / 2, pageHeight - 5, { align: 'center' });
+                }
+                
+                doc.save('Dashboard_Penduduk_Tanimbar_2025.pdf');
+                
+                updateProgress(100, 'Selesai!');
+                await sleep(400);
+                
+                showToast('PDF berhasil diunduh!', 'success');
+                
+            } catch (error) {
+                console.error('PDF Error:', error);
+                showToast('Gagal membuat PDF. Silakan coba lagi.', 'error');
+            } finally {
+                modal.classList.remove('active');
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+
         function showSection(sectionId) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
             
             document.getElementById(sectionId).classList.add('active');
             event.target.closest('.nav-link').classList.add('active');
             
-            // Close mobile sidebar
             if (window.innerWidth <= 1024) {
                 toggleSidebar();
-            }
-            
-            // Scroll to top on mobile
-            if (window.innerWidth <= 1024) {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
         function switchTab(tabId, btn) {
             const parent = btn.closest('.tab-content') || document.body;
-            parent.querySelectorAll('.tab-subcontent').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            parent.querySelectorAll('.tab-btn').forEach(b => {
-                b.classList.remove('active');
-            });
+            parent.querySelectorAll('.tab-subcontent').forEach(tab => tab.classList.remove('active'));
+            parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             
             document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
@@ -2805,84 +2334,38 @@
             menuBtn.classList.toggle('active');
             body.classList.toggle('menu-open');
             
-            // Change menu icon
-            if (sidebar.classList.contains('active')) {
-                menuBtn.innerHTML = '✕';
-            } else {
-                menuBtn.innerHTML = '☰';
-            }
+            menuBtn.innerHTML = sidebar.classList.contains('active') ? '✕' : '☰';
         }
 
-        // Handle resize
         window.addEventListener('resize', () => {
             if (window.innerWidth > 1024) {
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('overlay');
-                const menuBtn = document.getElementById('mobileMenuBtn');
-                const body = document.body;
-                
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                menuBtn.classList.remove('active');
-                body.classList.remove('menu-open');
-                menuBtn.innerHTML = '☰';
+                document.getElementById('sidebar').classList.remove('active');
+                document.getElementById('overlay').classList.remove('active');
+                document.getElementById('mobileMenuBtn').classList.remove('active');
+                document.body.classList.remove('menu-open');
+                document.getElementById('mobileMenuBtn').innerHTML = '☰';
             }
         });
 
-        // Close sidebar on escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 const sidebar = document.getElementById('sidebar');
-                if (sidebar.classList.contains('active')) {
-                    toggleSidebar();
-                }
+                if (sidebar.classList.contains('active')) toggleSidebar();
             }
         });
 
-        // Touch swipe to close sidebar
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        document.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true });
-
-        document.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        }, { passive: true });
-
-        function handleSwipe() {
-            const sidebar = document.getElementById('sidebar');
-            const swipeThreshold = 100;
-            
-            if (touchEndX > touchStartX + swipeThreshold && sidebar.classList.contains('active')) {
-                toggleSidebar();
-            }
-        }
-
-        // Scroll animation
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('visible');
             });
         }, { threshold: 0.1 });
 
         document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
 
-        // Initialize animations on load
         window.addEventListener('load', () => {
-            document.querySelectorAll('.animate-on-scroll').forEach(el => {
-                el.classList.add('visible');
-            });
+            createCharts();
+            document.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.add('visible'));
         });
-
-        // Prevent double tap zoom on mobile
-        document.addEventListener('dblclick', function(event) {
-            event.preventDefault();
-        }, { passive: false });
     </script>
 </body>
 </html>
