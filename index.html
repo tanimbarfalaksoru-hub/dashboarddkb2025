@@ -6,8 +6,6 @@
     <title>Dashboard Data Penduduk - Kab. Kepulauan Tanimbar</title>
     <!-- Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/fontsource-inter@5.0.0/index.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/fontsource-poppins@5.0.0/index.css" rel="stylesheet">
     
@@ -170,8 +168,8 @@
             </div>
             <div class="header-actions">
                 <div class="date-badge" id="lastUpdateBadge">📅 Sinkronisasi Data</div>
-                <button class="download-btn" onclick="downloadCompletePDF()">
-                    <span>📥</span><span>Cetak Laporan PDF</span>
+                <button class="download-btn" onclick="downloadGoogleDrivePDF()">
+                    <span>📥</span><span>Download Laporan</span>
                 </button>
             </div>
         </header>
@@ -266,7 +264,7 @@
         // KONFIGURASI DATABASE
         // Ganti string di bawah dengan URL Web App dari Google Apps Script Anda (WAJIB)
         // ==========================================
-        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwk3Zo-j8bh6POxJWzPq98dcYQstbDJh4_C_6vyPthVJ4gZO77ByBvvfkopTf8illbIog/exec'; 
+        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyj3dLEYffDkMZFzDg8sjePcgdSxY49ITRiJBm1tkv5H4KlQIhQUpx_GQOQZjMYWhnl_w/exec'; 
 
         let appData = {}; 
         let charts = {}; 
@@ -497,49 +495,27 @@
             setTimeout(() => t.classList.remove('show'), 4000);
         }
 
-        async function downloadCompletePDF() {
-            showToast('Mulai membuat PDF...', 'success');
-            try {
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF('p', 'mm', 'a4');
-                const pW = doc.internal.pageSize.getWidth();
+        function downloadGoogleDrivePDF() {
+            // ==========================================
+            // LINK GOOGLE DRIVE UNTUK DOWNLOAD LAPORAN
+            // Ganti string di bawah dengan Link Share Google Drive Anda.
+            // ==========================================
+            const googleDriveLink = 'MASUKKAN_LINK_GOOGLE_DRIVE_ANDA_DISINI'; 
 
-                doc.setFillColor(30, 41, 59); doc.rect(0, 0, pW, 40, 'F');
-                doc.setTextColor(255, 255, 255); doc.setFontSize(16); doc.setFont('helvetica', 'bold');
-                doc.text('LAPORAN DEMOGRAFI KAB. KEPULAUAN TANIMBAR', pW/2, 22, {align:'center'});
-                doc.setTextColor(30,41,59); doc.setFontSize(12);
-                
-                let y = 50;
-                doc.text('Ringkasan Eksekutif', 14, y); y += 10;
-                
-                const sumKeys = Object.keys(appData.summary || {});
-                const sumVals = Object.values(appData.summary || {}).map(v => v.toString());
-                const sumArr = sumKeys.map((k, i) => [k, sumVals[i]]);
-                
-                doc.autoTable({ startY: y, head:[['Indikator', 'Nilai']], body: sumArr, theme:'striped', headStyles:{fillColor:[30,64,175]} });
-                y = doc.lastAutoTable.finalY + 15;
-
-                if (charts.district) {
-                    doc.text('Grafik Penduduk Kecamatan', 14, y); y+=5;
-                    const imgDist = charts.district.canvas.toDataURL('image/png', 1.0);
-                    doc.addImage(imgDist, 'PNG', 14, y, 180, 70);
-                    y += 80;
-                }
-
-                if(y > 200) { doc.addPage(); y = 20; }
-
-                if (charts.education) {
-                    doc.text('Tingkat Pendidikan', 14, y); y+=5;
-                    const imgEdu = charts.education.canvas.toDataURL('image/png', 1.0);
-                    doc.addImage(imgEdu, 'PNG', 14, y, 180, 70);
-                }
-
-                doc.save('Laporan_Demografi_Tanimbar.pdf');
-                showToast('PDF Berhasil Diunduh!', 'success');
-            } catch(e) {
-                console.error(e);
-                showToast('Gagal mencetak PDF', 'error');
+            if (googleDriveLink === 'MASUKKAN_LINK_GOOGLE_DRIVE_ANDA_DISINI') {
+                showToast('Link Google Drive belum disetel di dalam kode!', 'warning');
+                return;
             }
+
+            showToast('Mengunduh Laporan...', 'success');
+            
+            // Membuat elemen tersembunyi untuk memicu download / membuka tab baru
+            const link = document.createElement('a');
+            link.href = googleDriveLink;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
