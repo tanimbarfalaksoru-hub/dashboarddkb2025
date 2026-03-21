@@ -266,7 +266,7 @@
         // KONFIGURASI DATABASE
         // Ganti string di bawah dengan URL Web App dari Google Apps Script Anda
         // ==========================================
-        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1X8pCD6nj1hGRJZ2yOCi0g30SsRia9r0kZs4tJbFCf6eWW2XqpL5ZaHy5NBeSNb_njQ/exec'; 
+        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjndgKATu-YaDYS-EtICTEH-dReYlxdwk3Bs3F_VhZTMYEL7Fm9W1glmv0f8uWGEhWPg/exec'; 
 
         let appData = {}; // Menyimpan data global
         let charts = {}; // Menyimpan instance chart untuk export PDF
@@ -314,7 +314,9 @@
                     throw new Error("URL_DEFAULT");
                 }
 
-                const response = await fetch(GOOGLE_APP_SCRIPT_URL);
+                // PERBAIKAN: Tambahkan parameter waktu agar browser tidak menggunakan cache lama
+                const noCacheUrl = GOOGLE_APP_SCRIPT_URL + "?t=" + new Date().getTime();
+                const response = await fetch(noCacheUrl);
                 
                 if (!response.ok) throw new Error("Gagal mengambil data dari server");
                 
