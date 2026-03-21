@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Data Penduduk - Kab. Kepulauan Tanimbar 2025</title>
+    <title>Dashboard Data Penduduk - Kab. Kepulauan Tanimbar</title>
     <!-- Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -264,17 +264,15 @@
     <script>
         // ==========================================
         // KONFIGURASI DATABASE
-        // Ganti string di bawah dengan URL Web App dari Google Apps Script Anda
+        // Ganti string di bawah dengan URL Web App dari Google Apps Script Anda (WAJIB)
         // ==========================================
-        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjndgKATu-YaDYS-EtICTEH-dReYlxdwk3Bs3F_VhZTMYEL7Fm9W1glmv0f8uWGEhWPg/exec'; 
+        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwk3Zo-j8bh6POxJWzPq98dcYQstbDJh4_C_6vyPthVJ4gZO77ByBvvfkopTf8illbIog/exec'; 
 
-        let appData = {}; // Menyimpan data global
-        let charts = {}; // Menyimpan instance chart untuk export PDF
+        let appData = {}; 
+        let charts = {}; 
 
-        // Format angka dengan pemisah ribuan
         const fmt = (num) => num ? num.toLocaleString('id-ID') : 0;
 
-        // Data dummy untuk fallback (mencegah blank/error)
         function getFallbackData() {
             return {
                 summary: {
@@ -301,24 +299,31 @@
             };
         }
 
-        // Main Initialize
         window.addEventListener('load', async () => {
             await fetchDashboardData();
         });
 
-        // Fetch Data from Google Apps Script
         async function fetchDashboardData() {
             try {
-                // Mencegah request Fetch jika URL masih berupa URL placeholder/contoh dari awal
-                if (GOOGLE_APP_SCRIPT_URL.includes('AKfycbzL5Tz5lZkFf2Xo4B8W9_mQ_YvE7-cQx1_T_P_j_1_G_q')) {
+                // Pengecekan jika URL belum diganti oleh pengguna
+                if (GOOGLE_APP_SCRIPT_URL === 'PASTE_URL_ANDA_DI_SINI' || GOOGLE_APP_SCRIPT_URL.includes('AKfycbzL5Tz5lZkFf2Xo4B8W9_mQ_YvE7-cQx1_T_P_j_1_G_q')) {
                     throw new Error("URL_DEFAULT");
                 }
 
-                // PERBAIKAN: Tambahkan parameter waktu agar browser tidak menggunakan cache lama
+                // FIX UTAMA: Menambahkan redirect 'follow' dan parameter bypass cache
                 const noCacheUrl = GOOGLE_APP_SCRIPT_URL + "?t=" + new Date().getTime();
-                const response = await fetch(noCacheUrl);
                 
-                if (!response.ok) throw new Error("Gagal mengambil data dari server");
+                console.log("Mencoba mengambil data dari:", noCacheUrl);
+                
+                const response = await fetch(noCacheUrl, {
+                    method: 'GET',
+                    redirect: 'follow', // Penting untuk melewati redirect dari Google
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 
                 const result = await response.json();
                 
@@ -328,6 +333,7 @@
                     renderCharts(appData);
                     
                     document.getElementById('lastUpdateBadge').innerText = "📅 Data Terkini Terhubung";
+                    document.getElementById('lastUpdateBadge').classList.remove('badge-warning');
                     
                     setTimeout(() => {
                         document.getElementById('globalLoader').style.opacity = '0';
@@ -338,24 +344,22 @@
                     throw new Error(result.message || "Struktur data tidak valid");
                 }
             } catch (error) {
-                // console.error() dihilangkan agar tidak memenuhi log dengan stack trace yang panjang
+                console.warn("Fetch Gagal, menggunakan fallback mode:", error.message);
                 
-                // Gunakan mekanisme Fallback jika Fetch Error atau URL belum diganti (Mencegah Layar Blank)
+                // Mekanisme Fallback
                 appData = getFallbackData();
                 updateUI(appData);
                 renderCharts(appData);
                 
-                // Ubah Tampilan Badge untuk memberi tahu pengguna
                 const badge = document.getElementById('lastUpdateBadge');
                 badge.innerText = "⚠️ Mode Data Contoh";
                 badge.classList.add('badge-warning');
                 
-                let pesanNotifikasi = 'Akses API Gagal. Menampilkan data contoh.';
+                let pesanNotifikasi = 'Koneksi ke Google Sheets diblokir (CORS). Periksa hak akses Deployment Anda.';
                 if (error.message === "URL_DEFAULT") {
-                    pesanNotifikasi = 'URL Apps Script belum diganti. Menampilkan data contoh.';
+                    pesanNotifikasi = 'URL Apps Script belum diisi. Menampilkan data contoh.';
                 }
                 
-                // Update UI Loader
                 setTimeout(() => {
                     document.getElementById('globalLoader').style.opacity = '0';
                     setTimeout(() => document.getElementById('globalLoader').style.display = 'none', 500);
@@ -364,7 +368,6 @@
             }
         }
 
-        // Update Text / DOM Elements
         function updateUI(data) {
             const sum = data.summary || {};
             document.getElementById('valTotal').innerText = fmt(sum["Total Penduduk"] || 0);
@@ -379,12 +382,10 @@
             document.getElementById('valGrowth').innerText = (sum["Pertumbuhan"] || 0) + "%";
         }
 
-        // Render Semua ChartJS
         function renderCharts(data) {
             Chart.defaults.color = '#94a3b8';
             Chart.defaults.font.family = "'Inter', sans-serif";
             
-            // Hapus chart lama jika dipanggil berulang
             Object.values(charts).forEach(chart => { if (chart) chart.destroy(); });
 
             const kec = data.kecamatan || [];
@@ -394,7 +395,6 @@
             const kecMigIn = kec.map(k => k.MigrasiMasuk);
             const kecMigOut = kec.map(k => k.MigrasiKeluar);
 
-            // 1. Chart Kecamatan
             charts.district = new Chart(document.getElementById('districtChart'), {
                 type: 'bar',
                 data: {
@@ -404,14 +404,12 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
-            // 2. Chart Kepadatan
             charts.density = new Chart(document.getElementById('densityChart'), {
                 type: 'bar',
                 data: { labels: kecLabels, datasets: [{ label: 'Kepadatan (jiwa/km2)', data: kecDensity, backgroundColor: '#8b5cf6', borderRadius: 6 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
-            // 3. Gender Doughnut
             const sum = data.summary || {};
             charts.gender = new Chart(document.getElementById('genderChart'), {
                 type: 'doughnut',
@@ -422,13 +420,8 @@
                 options: { responsive: true, maintainAspectRatio: false, cutout: '70%' }
             });
 
-            // Helper untuk konversi object ke array ChartJS
-            const prepareChartData = (obj = {}) => ({
-                labels: Object.keys(obj),
-                data: Object.values(obj)
-            });
+            const prepareChartData = (obj = {}) => ({ labels: Object.keys(obj), data: Object.values(obj) });
 
-            // 4. Pendidikan
             const edu = prepareChartData(data.pendidikan);
             charts.education = new Chart(document.getElementById('educationChart'), {
                 type: 'bar',
@@ -436,7 +429,6 @@
                 options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
-            // 5. Pekerjaan
             const job = prepareChartData(data.pekerjaan);
             charts.employment = new Chart(document.getElementById('employmentChart'), {
                 type: 'pie',
@@ -444,7 +436,6 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
             });
 
-            // 6. Agama
             const rel = prepareChartData(data.agama);
             charts.religion = new Chart(document.getElementById('religionChart'), {
                 type: 'doughnut',
@@ -452,7 +443,6 @@
                 options: { responsive: true, maintainAspectRatio: false }
             });
 
-            // 7. Dokumen
             const doc = prepareChartData(data.dokumen);
             charts.documents = new Chart(document.getElementById('documentsChart'), {
                 type: 'bar',
@@ -460,7 +450,6 @@
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { max: 100 } } }
             });
 
-            // 8. Migrasi
             charts.migration = new Chart(document.getElementById('migrationChart'), {
                 type: 'line',
                 data: {
@@ -474,9 +463,6 @@
             });
         }
 
-        // ==========================================
-        // UI INTERACTIONS
-        // ==========================================
         function showSection(id) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -508,12 +494,9 @@
             if (type === 'warning') icon = '⚠️';
             
             document.getElementById('toastIcon').innerText = icon;
-            setTimeout(() => t.classList.remove('show'), 3500);
+            setTimeout(() => t.classList.remove('show'), 4000);
         }
 
-        // ==========================================
-        // PDF GENERATOR
-        // ==========================================
         async function downloadCompletePDF() {
             showToast('Mulai membuat PDF...', 'success');
             try {
@@ -521,7 +504,6 @@
                 const doc = new jsPDF('p', 'mm', 'a4');
                 const pW = doc.internal.pageSize.getWidth();
 
-                // Cover
                 doc.setFillColor(30, 41, 59); doc.rect(0, 0, pW, 40, 'F');
                 doc.setTextColor(255, 255, 255); doc.setFontSize(16); doc.setFont('helvetica', 'bold');
                 doc.text('LAPORAN DEMOGRAFI KAB. KEPULAUAN TANIMBAR', pW/2, 22, {align:'center'});
