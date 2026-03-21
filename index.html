@@ -86,25 +86,86 @@
         .section-title { font-family: 'Poppins'; font-size: 20px; font-weight: 700; color: white; margin-bottom: 22px; }
         
         /* Tabs */
-        .tabs { display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; }
-        .tab-btn { padding: 10px 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: rgba(30,41,59,0.6); color: var(--gray-400); font-size: 13px; cursor: pointer; }
-        .tab-btn.active { background: var(--gradient-1); color: white; }
+        .tabs { 
+            display: flex; gap: 8px; margin-bottom: 22px; 
+            overflow-x: auto; -webkit-overflow-scrolling: touch; 
+            padding-bottom: 8px; scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab-btn { 
+            padding: 10px 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); 
+            background: rgba(30,41,59,0.6); color: var(--gray-400); font-size: 13px; 
+            cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all 0.3s ease;
+        }
+        .tab-btn.active { 
+            background: var(--gradient-1); color: white; border-color: transparent; 
+            font-weight: 600; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); 
+        }
         .tab-content, .tab-subcontent { display: none; }
         .tab-content.active, .tab-subcontent.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Mobile Responsive */
-        .mobile-header { display: none; position: fixed; top: 0; left: 0; right: 0; height: 65px; background: rgba(30,41,59,0.98); z-index: 999; padding: 0 14px; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .mobile-menu-btn { display: none; width: 40px; height: 40px; border-radius: 8px; background: var(--gradient-1); border: none; color: white; font-size: 20px; cursor: pointer; }
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 998; backdrop-filter: blur(4px); }
+        .mobile-header { 
+            display: none; position: fixed; top: 0; left: 0; right: 0; height: 70px; 
+            background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            z-index: 999; padding: 0 20px; align-items: center; justify-content: space-between; 
+            border-bottom: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+        }
+        .mobile-menu-btn { 
+            display: none; width: 42px; height: 42px; border-radius: 10px; 
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+            color: white; font-size: 22px; cursor: pointer; 
+            align-items: center; justify-content: center; transition: all 0.3s ease;
+        }
+        .mobile-menu-btn:active { transform: scale(0.92); background: rgba(255,255,255,0.1); }
+        .overlay { 
+            visibility: hidden; opacity: 0; position: fixed; inset: 0; 
+            background: rgba(15, 23, 42, 0.8); z-index: 998; backdrop-filter: blur(4px); 
+            transition: all 0.3s ease; 
+        }
+        .overlay.active { visibility: visible; opacity: 1; }
         
         @media (max-width: 1024px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.active { transform: translateX(0); }
-            .main-content { margin-left: 0; padding-top: 85px; }
-            .mobile-header, .mobile-menu-btn { display: flex; }
-            .overlay.active { display: block; }
+            .sidebar { transform: translateX(-100%); transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+            .sidebar.active { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,0.5); }
+            .main-content { margin-left: 0; padding: 24px; padding-top: 95px; }
+            .mobile-header { display: flex; }
+            .mobile-menu-btn { display: flex; }
             .charts-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .main-content { padding: 16px; padding-top: 90px; }
+            
+            /* Penyesuaian Bagian Header Atas */
+            .header { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+            .header-title h2 { font-size: 22px; line-height: 1.3; margin-bottom: 4px; }
+            .header-title p { font-size: 13px; line-height: 1.5; }
+            .header-actions { width: 100%; flex-direction: column; align-items: stretch; gap: 10px; }
+            .date-badge { width: 100%; text-align: center; }
+            .download-btn { width: 100%; justify-content: center; padding: 14px 20px; font-size: 15px; border-radius: 12px; }
+            
+            /* Grid Pintar 2-Kolom untuk Kartu Statistik (Widget Style) */
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+            .stats-grid .stat-card:last-child:nth-child(odd) { grid-column: 1 / -1; } /* Kartu ganjil terakhir akan membentang penuh */
+            .stat-card { padding: 16px; border-radius: 16px; }
+            .stat-value { font-size: 22px; }
+            .stat-label { font-size: 11px; line-height: 1.4; }
+            
+            /* Penyesuaian Ukuran Chart / Grafik */
+            .charts-grid { gap: 16px; margin-bottom: 24px; }
+            .chart-card { padding: 16px; border-radius: 16px; }
+            .chart-title { font-size: 15px; margin-bottom: 16px; }
+            .chart-container { height: 260px; }
+            
+            .section-title { font-size: 18px; margin-bottom: 16px; }
+        }
+
+        @media (max-width: 380px) {
+            /* Fallback Khusus Layar HP Sangat Kecil (misal iPhone SE) */
+            .stats-grid { grid-template-columns: 1fr; } 
+            .stats-grid .stat-card:last-child:nth-child(odd) { grid-column: auto; }
         }
 
         /* Utilities */
@@ -264,7 +325,7 @@
         // KONFIGURASI DATABASE
         // Ganti string di bawah dengan URL Web App dari Google Apps Script Anda (WAJIB)
         // ==========================================
-        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyj3dLEYffDkMZFzDg8sjePcgdSxY49ITRiJBm1tkv5H4KlQIhQUpx_GQOQZjMYWhnl_w/exec'; 
+        const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx1cGD-ke4P9Eettan8MQHk9iFQErNwpyY2frGw0h5JFvsqe51m4oNjy3ALD3_ckSA7Sg/exec'; 
 
         let appData = {}; 
         let charts = {}; 
